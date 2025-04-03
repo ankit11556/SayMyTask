@@ -22,6 +22,27 @@ exports.getReminders = async (req,res) => {
   }
 }
 
+exports.editReminder = async (req,res) => {
+  try {
+    const {id} = req.params;
+    const { userName, language, dateTime, tasks} = req.body;
+
+    const edit = await Reminder.findByIdAndUpdate(
+      id,
+      {userName, language, dateTime, tasks},
+      {new: true, runValidators: true}
+    )
+
+    if(!edit){
+      return res.status(404).json({error: 'Reminder note found'})
+    }
+
+    res.status(200).json({ message: 'Reminder updated successfully',edit});
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
+
 exports.deleteReminder = async (req,res) => {
   try {
     const {id} = req.params;
