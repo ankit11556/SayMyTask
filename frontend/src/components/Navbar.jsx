@@ -1,12 +1,12 @@
 import { useState } from "react"
-
+import { Link } from "react-router-dom"
 const Navbar = () =>{
   const [isOpen,setIsOpen] = useState(false)
   return(
     <>
     <nav className="bg-blue-600 text-white flex justify-between items-center py-4 px-6">
         <h1 className="text-lg font-bold">TimeCue</h1>
-        
+
 {/* Mobile icon */}
  <div className="md:hidden" aria-label="Toggle Menu" onClick={() => setIsOpen(!isOpen)}>
 
@@ -42,9 +42,9 @@ const Navbar = () =>{
    
   {/* desktop */}
       <ul className="hidden md:flex space-x-6 flex-1 justify-center">
-        <li className="hover:text-blue-300 hover:cursor-pointer">Home</li>
-        <li className="hover:text-blue-300 hover:cursor-pointer">Set Reminder</li>
-        <li className="hover:text-blue-300 hover:cursor-pointer">My Reminders</li>
+        <li className="hover:text-blue-300 hover:cursor-pointer"><Link to="/">Home</Link></li>
+        <li className="hover:text-blue-300 hover:cursor-pointer"><Link to="/set-reminder">Set Reminder</Link></li>
+        <li className="hover:text-blue-300 hover:cursor-pointer"><Link to="/my-reminders">My Reminders</Link></li>
       </ul>
 
      <div className="gap-4 hidden md:flex">
@@ -59,9 +59,9 @@ const Navbar = () =>{
        <div className="md:hidden flex flex-col items-start space-y-4 mt-4 px-6 py-4 bg-blue-600 text-white shadow-md rounded transition-all duration-300">
 
           <ul className="space-y-2">
-            <li className="hover:text-blue-300 cursor-pointer">Home</li>
-            <li className="hover:text-blue-300 cursor-pointer">Set Reminder</li>
-            <li className="hover:text-blue-300 cursor-pointer">My Reminders</li>
+            <li className="hover:text-blue-300 cursor-pointer"><Link to="/">Home</Link></li>
+            <li className="hover:text-blue-300 cursor-pointer"><Link to="/set-reminder">Set Reminder</Link></li>
+            <li className="hover:text-blue-300 cursor-pointer"><Link to="/my-reminders">My Reminders</Link></li>       
           </ul>
           <div className="flex flex-col gap-2 mt-4 ">
             <button className="bg-white text-blue-600 px-4 py-2 rounded w-full">Log In</button>
