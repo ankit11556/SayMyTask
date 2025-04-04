@@ -1,9 +1,9 @@
-
+import AppRouter from "./routes/AppRouter"
 function App() {
   
   return (
     <>
-    <h1 className="text-lg bg-blue-500">hi</h1>
+   <AppRouter></AppRouter>
     </>
   )
 }
