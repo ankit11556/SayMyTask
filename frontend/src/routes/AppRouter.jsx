@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Home from "../pages/Home";
 import SetReminder from "../pages/SetReminder";
 import MyReminders from "../pages/MyReminders";
+import HeroSection from "../components/HeroSection";
 const AppRouter = () =>{
   return(
  <Router>
