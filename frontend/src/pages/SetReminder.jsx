@@ -4,20 +4,19 @@ import {useNavigate} from "react-router-dom"
 const SetReminder = () =>{
 
  const navigate = useNavigate()
-
-
   const [userName,setUserName] = useState("");
   const [language,setLangage] = useState("");
   const [tasks,setTask] = useState("");
-  const [dateTime,setDate] = useState("");
+  const [date,setDate] = useState("");
   const [time,setTime] = useState("");
-  
-const handleSubmit = async (e) => {
+  const dateTime = `${date}T${time}`
+ 
+  const handleSubmit = async (e) => {
   e.preventDefault();
   try {
     const response = await postReminder({userName,language,tasks,dateTime})
     alert(response.data.message)
-    navigate("/")
+    navigate("/my-reminders")
   } catch (error) {
     alert(error.response?.data?.error)
   }
@@ -62,7 +61,7 @@ const handleSubmit = async (e) => {
     <div>
       <label className="block text-blue-600 font-semibold mb-1">Date</label>
       <input type="date" className="w-full border p-2 rounded" 
-      value={dateTime}
+      value={date}
       onChange={(e)=>setDate(e.target.value)}
       />
     </div>
