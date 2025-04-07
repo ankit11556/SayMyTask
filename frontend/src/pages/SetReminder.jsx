@@ -1,18 +1,23 @@
-import { use, useState } from "react"
+import {  useState } from "react"
 import { postReminder } from "../services/Api";
-
+import {useNavigate} from "react-router-dom"
 const SetReminder = () =>{
+
+ const navigate = useNavigate()
+
+
   const [userName,setUserName] = useState("");
   const [language,setLangage] = useState("");
-  const [task,setTask] = useState("");
-  const [date,setDate] = useState("");
+  const [tasks,setTask] = useState("");
+  const [dateTime,setDate] = useState("");
   const [time,setTime] = useState("");
   
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const response = await postReminder({userName,language,task,date,time})
+    const response = await postReminder({userName,language,tasks,dateTime})
     alert(response.data.message)
+    navigate("/")
   } catch (error) {
     alert(error.response?.data?.error)
   }
@@ -49,7 +54,7 @@ const handleSubmit = async (e) => {
     <div>
       <label className="block text-blue-600 font-semibold mb-1">Reminder Task</label>
       <textarea placeholder="e.g. Attend meeting at 5 PM" className="w-full border p-2 rounded" rows="3"
-      value={task}
+      value={tasks}
       onChange={(e)=>setTask(e.target.value)}
       ></textarea>
     </div>
@@ -57,7 +62,7 @@ const handleSubmit = async (e) => {
     <div>
       <label className="block text-blue-600 font-semibold mb-1">Date</label>
       <input type="date" className="w-full border p-2 rounded" 
-      value={date}
+      value={dateTime}
       onChange={(e)=>setDate(e.target.value)}
       />
     </div>

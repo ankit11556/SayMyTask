@@ -2,9 +2,11 @@ const express = require('express');
 const app = express();
 const reminderRouter = require('./routes/reminderRoutes')
 require('dotenv').config()
+const cors = require('cors')
 
 require('./config/db')
 
+app.use(cors())
 app.use(express.json())
 app.use("/api/reminders",reminderRouter)
 
