@@ -1,22 +1,15 @@
 const mongoose = require('mongoose')
 
 const reminderSchema = new mongoose.Schema({
-  userName: {
-    type: String,
-    required: true
-  },
-  language: {
-    type: String,
+  tasks: {
+    type: [String],  // This will store an array of task names (like "Eat", "Study: Math")
     required: true
   },
   dateTime: {
     type: Date,
     required: true
-  },
-  tasks: {
-    type: [String],  // This will store an array of task names (like "Eat", "Study: Math")
-    required: true
   }
+  
 });
 
 // Model creation

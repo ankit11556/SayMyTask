@@ -1,20 +1,31 @@
-import {  useState } from "react"
+import {  useEffect, useState } from "react"
 import { postReminder } from "../services/Api";
 import {useNavigate} from "react-router-dom"
+import { useLocation } from "react-router-dom";
 const SetReminder = () =>{
 
  const navigate = useNavigate()
-  const [userName,setUserName] = useState("");
-  const [language,setLangage] = useState("");
+ 
   const [tasks,setTask] = useState("");
   const [date,setDate] = useState("");
   const [time,setTime] = useState("");
   const dateTime = `${date}T${time}`
+
+  const location = useLocation()
+ const isEditMode = location.state?.reminders || null;
+console.log(isEditMode);
+
+ useEffect(()=>{
+  if(isEditMode){
+    const {tasks,dateTime} = location.state.reminders;
+    setTask(tasks.join(","))
+  }
+ },[])
  
   const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const response = await postReminder({userName,language,tasks,dateTime})
+    const response = await postReminder({tasks,dateTime})
     alert(response.data.message)
     navigate("/my-reminders")
   } catch (error) {
@@ -28,28 +39,6 @@ const SetReminder = () =>{
 
   <form onSubmit={handleSubmit} className="space-y-4">
     
-    <div>
-      <label className="block text-blue-600 font-semibold mb-1">Username</label>
-      <input type="text" placeholder="Enter your name" className="w-full border p-2 rounded" 
-      value={userName}
-      onChange={(e)=> setUserName(e.target.value)}
-      />
-    </div>
-
-    <div>
-      <label className="block text-blue-600 font-semibold mb-1">Language</label>
-      <select className="w-full border p-2 rounded"
-      value={language}
-      onChange={(e)=> setLangage(e.target.value)}
-      >
-        <option value="">Select language</option>
-        <option value="en">English</option>
-        <option value="hi">Hindi</option>
-        <option value="te">Telugu</option>
-        <option value="zh">Chinese</option>
-      </select>
-    </div>
-
     <div>
       <label className="block text-blue-600 font-semibold mb-1">Reminder Task</label>
       <textarea placeholder="e.g. Attend meeting at 5 PM" className="w-full border p-2 rounded" rows="3"
