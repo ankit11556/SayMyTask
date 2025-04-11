@@ -52,7 +52,7 @@ const MyReminders = () =>{
             </button>
         
             <button  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
-            onClick={()=> navigate("/set-reminder",{state: {reminders:reminders}})}
+            onClick={()=> navigate("/set-reminder",{state: {reminders:reminder}})}
             >
               edit
             </button>

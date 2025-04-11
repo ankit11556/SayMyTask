@@ -2,9 +2,9 @@ const Reminder = require("../models/Reminder");
 
 exports.createReminder = async (req,res) => {
   try {
-    const { userName, language, dateTime, tasks} = req.body;
+    const { tasks,dateTime} = req.body;
 
-    const newReminder = new Reminder({userName, language, dateTime, tasks});
+    const newReminder = new Reminder({tasks,dateTime});
 
     await newReminder.save()
     res.status(201).json({ message: 'Reminder created successfully!' });
@@ -25,11 +25,11 @@ exports.getReminders = async (req,res) => {
 exports.editReminder = async (req,res) => {
   try {
     const {id} = req.params;
-    const { userName, language, dateTime, tasks} = req.body;
+    const { tasks,dateTime} = req.body;
 
     const edit = await Reminder.findByIdAndUpdate(
       id,
-      {userName, language, dateTime, tasks},
+      { tasks,dateTime},
       {new: true, runValidators: true}
     )
 

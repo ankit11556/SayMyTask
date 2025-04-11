@@ -9,7 +9,7 @@ export const getReminder = async () => {
   return await axios.get(`${API_URL}`)
 }
 
-export const editReminder = async (reminderData,id) => {
+export const editReminder = async (id,reminderData) => {
   return await axios.put(`${API_URL}/${id}`,reminderData)
 }
 

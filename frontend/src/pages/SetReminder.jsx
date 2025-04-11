@@ -1,32 +1,47 @@
 import {  useEffect, useState } from "react"
-import { postReminder } from "../services/Api";
+import { editReminder, postReminder } from "../services/Api";
 import {useNavigate} from "react-router-dom"
 import { useLocation } from "react-router-dom";
+
 const SetReminder = () =>{
 
  const navigate = useNavigate()
  
+ const location = useLocation()
+ const isEditMode = location.state?.reminders || null;
+
   const [tasks,setTask] = useState("");
   const [date,setDate] = useState("");
   const [time,setTime] = useState("");
   const dateTime = `${date}T${time}`
 
-  const location = useLocation()
- const isEditMode = location.state?.reminders || null;
-console.log(isEditMode);
-
  useEffect(()=>{
   if(isEditMode){
-    const {tasks,dateTime} = location.state.reminders;
-    setTask(tasks.join(","))
+    setTask(isEditMode.tasks)  
+    
+   const localDateTime = new Date(isEditMode.dateTime);
+
+      const dateStr = localDateTime.toISOString().slice(0, 10);
+      setDate(dateStr);
+
+      const timeStr = localDateTime.toTimeString().slice(0, 5);
+      setTime(timeStr);
   }
  },[])
  
   const handleSubmit = async (e) => {
   e.preventDefault();
   try {
+    if (isEditMode) {
+      const response = await editReminder(isEditMode._id,{tasks,dateTime})
+      alert(response.data.message)
+      
+    } else{
+
     const response = await postReminder({tasks,dateTime})
     alert(response.data.message)
+    
+    }
     navigate("/my-reminders")
   } catch (error) {
     alert(error.response?.data?.error)
@@ -64,7 +79,7 @@ console.log(isEditMode);
     </div>
 
     <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-full">
-      Set Reminder
+    {isEditMode ? "Update Reminder" : "Set Reminder"}
     </button>
   </form>
 </section>
