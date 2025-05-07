@@ -1,21 +1,23 @@
 const User = require('../models/User')
+const generateToken = require('../utils/generateToken')
+const sendTokenToCookie = require('../utils/sendTokenToCookie')
 
 exports.signup = async (req,res) => {
   try {
     const {name,email,password} = req.body;
 
-    const user = await User.findOne({email});
+    const existUser = await User.findOne({email});
 
-    if(user){
+    if(existUser){
       return res.status(400).json({message: 'User already exists' })
     }
     
-    user = new User({name,email,password});
-    await user.save();
+   const user =  User.create({name,email,password});
+    // await user.save();
 
-    const token = generateToken(user);
+    const {accessToken,refreshToken} = generateToken(user._id);
 
-    sendTokenCookie(token,res);
+    sendTokenToCookie(res,accessToken,refreshToken);
 
     res.status(201).json({message: 'User registered successfully', user})
   } catch (error) {
