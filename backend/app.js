@@ -9,10 +9,10 @@ require('./config/db')
 app.use(cors())
 app.use(express.json())
 
-//const reminderRouter = require('./routes/reminderRoutes')
+const reminderRouter = require('./routes/reminderRoutes')
 const authRouter = require('./routes/authRoutes')
 
-//app.use("/api/reminders",reminderRouter)
+app.use("/api/reminders",reminderRouter)
 app.use("/api/auth",authRouter)
 
 
