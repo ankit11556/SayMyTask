@@ -3,9 +3,11 @@ const app = express();
 
 require('dotenv').config()
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 
 require('./config/db')
-
+ 
+app.use(cookieParser)
 app.use(cors())
 app.use(express.json())
 
