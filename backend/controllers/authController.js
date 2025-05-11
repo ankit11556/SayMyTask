@@ -3,6 +3,7 @@ const generateToken = require('../utils/generateToken')
 const sendTokenToCookie = require('../utils/sendTokenToCookie')
 const bcrypt = require('bcrypt')
 
+//signup
 exports.signup = async (req,res) => {
   try {
     const {name,email,password} = req.body;
@@ -13,9 +14,8 @@ exports.signup = async (req,res) => {
       return res.status(400).json({message: 'User already exists' })
     }
     
-   const user =  User.create({name,email,password});
+   const user = await User.create({name,email,password});
      
-
     const {accessToken,refreshToken} = generateToken(user._id);
 
     sendTokenToCookie(res,accessToken,refreshToken);
@@ -32,6 +32,7 @@ exports.signup = async (req,res) => {
   }
 }
 
+//login
 exports.login = async (req,res) => {
   try {
     const {email,password} = req.body;
@@ -64,4 +65,25 @@ exports.login = async (req,res) => {
      console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
+}
+
+//logout
+exports.logout = (req,res) =>{
+  res.clearCookie('accessToken',{
+    httpOnly: true,
+    secure: true,
+     path: "/",
+    sameSite: 'strict',
+   
+  });
+
+  res.clearCookie('refreshToken', {
+  httpOnly: true,
+  secure: true,
+  path: '/',
+  sameSite: 'strict',
+  
+});
+
+  res.status(200).json({message: 'Logged out successfully'})
 }

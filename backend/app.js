@@ -7,9 +7,10 @@ const cookieParser = require('cookie-parser')
 
 require('./config/db')
  
-app.use(cookieParser)
+
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser())
 
 const reminderRouter = require('./routes/reminderRoutes')
 const authRouter = require('./routes/authRoutes')
