@@ -2,6 +2,7 @@ const User = require('../models/User')
 const generateToken = require('../utils/generateToken')
 const sendTokenToCookie = require('../utils/sendTokenToCookie')
 const bcrypt = require('bcrypt')
+const sendEmail = require('../services/emailService')
 
 //signup
 exports.signup = async (req,res) => {
@@ -15,12 +16,17 @@ exports.signup = async (req,res) => {
     }
     
    const user = await User.create({name,email,password});
+
+   const emailToken = generateEmailVerificationToken(user._id)
      
-    const {accessToken,refreshToken} = generateToken(user._id);
+    const verifyLink = `http://localhost:5000/api/auth/verify-email?token=${emailToken}`
 
-    sendTokenToCookie(res,accessToken,refreshToken);
+    await sendEmail(
+      "Verify your email",
+      `<h3>Click to verify your email:</h3><a href="${verifyLink}">${verifyLink}</a>`
+    )
 
-    res.status(201).json({message: 'User registered successfully', 
+    res.status(201).json({message: "Signup successful. Please verify your email to activate your account", 
       user:{
         _id: user._id,
         name: user.name,
@@ -86,4 +92,9 @@ exports.logout = (req,res) =>{
 });
 
   res.status(200).json({message: 'Logged out successfully'})
+}
+
+//verify email
+exports.verifyEmail = async (req,res) => {
+  const {token} = req.quary;
 }
