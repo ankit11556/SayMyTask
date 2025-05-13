@@ -48,6 +48,11 @@ exports.login = async (req,res) => {
     }
 
     const user = await User.findOne({email}).select('+password');
+
+    if (!user.isVerified) {
+       return res.status(401).json({ message: "Please verify your email first" });
+   }
+
     if(!user){
       return res.status(401).json({message: 'Invalid credentials'})
     }
@@ -97,4 +102,28 @@ exports.logout = (req,res) =>{
 //verify email
 exports.verifyEmail = async (req,res) => {
   const {token} = req.quary;
+
+  if(!token){
+    return res.status(400).json({message: "Invalid token"})
+  }
+
+  try {
+    const decoded = jwt.verify(token,process.env.JWT_EMAIL_SECRET);
+    const user = await User.findById(decoded.userId);
+
+    if(!user){
+      return res.status(404).json({message: "user not found"});
+    }
+
+    if(user.isVerified){
+      return res.status(400).json({message:"Email already verified"})
+    }
+
+    user.isVerified = true
+    await user.save;
+
+    res.status(200).json({message: "Email verified successfully"})
+  } catch (error) {
+    return res.status(400).json({message: "Token expired or invalid"})
+  }
 }
