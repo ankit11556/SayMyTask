@@ -24,7 +24,7 @@ const VerifyEmail = () =>{
         }, 4000)
 
       } catch (error) {
-        setMessage(err.response?.data?.message || "Verification failed");
+        setMessage(error.response?.data?.message || "Verification failed");
       }
     };
     verifyEmail()

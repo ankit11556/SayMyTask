@@ -20,12 +20,13 @@ exports.signup = async (req,res) => {
 
    const emailToken = generateEmailVerificationToken(user._id)
      
-    const verifyLink = `${process.env.BASE_URL}/api/auth/verify-email?token=${emailToken}`
+    const verifyLink = `${process.env.BASE_URL}/verify-email?token=${emailToken}`
 
     await sendEmail(
       user.email,
       "Verify your email",
-      `<h3>Click to verify your email:</h3><a href="${verifyLink}">${verifyLink}</a>`
+      `<h3>Click to verify your email:</h3>
+      <a href="${verifyLink}" target="_blank" style="padding:10px 15px;background:#4CAF50;color:white;text-decoration:none;border-radius:5px;display:inline-block;">Click Here to Verify</a>`
     )
 
     res.status(201).json({message: "Signup successful. Please verify your email to activate your account", 
@@ -103,7 +104,7 @@ exports.logout = (req,res) =>{
 
 //verify email
 exports.verifyEmail = async (req,res) => {
-  const {token} = req.body.token;
+  const {token} = req.body;
 
   if(!token){
     return res.status(400).json({message: "Invalid token"})
@@ -122,9 +123,9 @@ exports.verifyEmail = async (req,res) => {
     }
 
     user.isVerified = true
-    await user.save;
+    await user.save();
 
-    res.status(200).json({message: "Email verified successfully"})
+   return res.status(200).json({message: "Email verified successfully"})
   } catch (error) {
     return res.status(400).json({message: "Token expired or invalid"})
   }
