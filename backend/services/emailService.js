@@ -5,13 +5,13 @@ const sendEmail = async (email,subject,html) => {
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
     auth: {
-      user: process.env,
-      pass: process.env
+      user: process.env.BREVO_USER,
+      pass: process.env.BREVO_PASS
     },
   });
 
   await transporter.sendMail({
-    from: `"TimeCue" <${process.env}>`,
+    from: `"TimeCue" <${process.env.BREVO_EMAIL}>`,
     to: email,
     subject,
     html

@@ -3,6 +3,7 @@ const generateToken = require('../utils/generateToken')
 const sendTokenToCookie = require('../utils/sendTokenToCookie')
 const bcrypt = require('bcrypt')
 const sendEmail = require('../services/emailService')
+const generateEmailVerificationToken = require('../utils/generateEmailToken')
 
 //signup
 exports.signup = async (req,res) => {
@@ -19,9 +20,10 @@ exports.signup = async (req,res) => {
 
    const emailToken = generateEmailVerificationToken(user._id)
      
-    const verifyLink = `http://localhost:5000/api/auth/verify-email?token=${emailToken}`
+    const verifyLink = `${process.env.BASE_URL}/api/auth/verify-email?token=${emailToken}`
 
     await sendEmail(
+      user.email,
       "Verify your email",
       `<h3>Click to verify your email:</h3><a href="${verifyLink}">${verifyLink}</a>`
     )
@@ -101,7 +103,7 @@ exports.logout = (req,res) =>{
 
 //verify email
 exports.verifyEmail = async (req,res) => {
-  const {token} = req.quary;
+  const {token} = req.body.token;
 
   if(!token){
     return res.status(400).json({message: "Invalid token"})

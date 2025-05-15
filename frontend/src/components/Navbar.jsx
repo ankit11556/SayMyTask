@@ -48,7 +48,7 @@ const Navbar = () =>{
       </ul>
 
      <div className="gap-4 hidden md:flex">
-      <button className="bg-white text-blue-600 px-4 py-2 rounded">Log In</button>
+      <button className="bg-white text-blue-600 px-4 py-2 rounded"><Link to="/login">Log In</Link></button>
       <button className="bg-blue-500 px-4 py-2 rounded">Sign Up</button>
      </div>
     </nav>
