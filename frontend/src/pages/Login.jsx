@@ -17,24 +17,34 @@ const Login = () =>{
     }
   }
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="email" 
-        placeholder="Enter email"
-        value={email}
-        onChange={(e)=>setEmail(e.target.value)}
-        />
+   <div className="max-w-md mx-auto mt-16 p-6 bg-white shadow-lg rounded-md">
+  <h2 className="text-3xl font-semibold mb-6 text-gray-800 text-center">Login</h2>
+  <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
+    <input
+      type="email"
+      placeholder="Enter email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      required
+      className="border border-gray-300 rounded-md px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <input
+      type="password"
+      placeholder="Enter password"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      required
+      className="border border-gray-300 rounded-md px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <button
+      type="submit"
+      className="bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors"
+    >
+      Login
+    </button>
+  </form>
+</div>
 
-        <input type="password" 
-        placeholder="Enter password"
-        value={password}
-        onChange={(e)=>setPassword(e.target.value)}
-        />
-
-        <button type="submit">Login</button>
-      </form>
-    </div>
   )
 }
 
