@@ -49,7 +49,7 @@ const Navbar = () =>{
 
      <div className="gap-4 hidden md:flex">
       <button className="bg-white text-blue-600 px-4 py-2 rounded"><Link to="/login">Log In</Link></button>
-      <button className="bg-blue-500 px-4 py-2 rounded">Sign Up</button>
+      <button className="bg-blue-500 px-4 py-2 rounded"><Link to="/sign-up">Sign Up</Link></button>
      </div>
     </nav>
 
@@ -65,7 +65,7 @@ const Navbar = () =>{
           </ul>
           <div className="flex flex-col gap-2 mt-4 ">
             <button className="bg-white text-blue-600 px-4 py-2 rounded w-full">Log In</button>
-            <button className="bg-blue-500 px-4 py-2 rounded w-full">Sign Up</button>
+            <button className="bg-blue-500 px-4 py-2 rounded w-full"><Link to="/sign-up">Sign Up</Link></button>
           </div>
         </div>
       )}

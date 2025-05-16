@@ -5,6 +5,7 @@ import SetReminder from "../pages/SetReminder";
 import MyReminders from "../pages/MyReminders";
 import VerifyEmail from "../pages/VerifyEmail";
 import Login from "../pages/Login";
+import Signup from "../pages/Signup";
 const AppRouter = () =>{
   return(
  <Router>
@@ -15,6 +16,7 @@ const AppRouter = () =>{
   <Route path="/set-reminder" element={<SetReminder/>}></Route>
   <Route path="/my-reminders" element={<MyReminders/>}></Route>
   <Route path="/verify-email" element={<VerifyEmail/>}></Route>
+  <Route path="/sign-up" element={<Signup/>}></Route>
   <Route path="/login" element={<Login/>}></Route>
 </Routes>
  </Router>
