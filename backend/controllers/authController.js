@@ -8,7 +8,9 @@ const jwt = require('jsonwebtoken')
 //signup
 exports.signup = async (req,res) => {
   try {
-    const {name,email,password} = req.body;
+    const {email,password} = req.body;
+    
+    
 
     const existUser = await User.findOne({email});
 
@@ -16,7 +18,7 @@ exports.signup = async (req,res) => {
       return res.status(400).json({message: 'User already exists' })
     }
     
-   const user = await User.create({name,email,password});
+   const user = await User.create({email,password});
 
    const emailToken = generateEmailVerificationToken(user._id)
      
@@ -32,7 +34,6 @@ exports.signup = async (req,res) => {
     res.status(201).json({message: "Signup successful. Please verify your email to activate your account", 
       user:{
         _id: user._id,
-        name: user.name,
         email: user.email
       }})
   } catch (error) {

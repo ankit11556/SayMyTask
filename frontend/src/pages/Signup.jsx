@@ -12,14 +12,14 @@ const Signup = () =>{
   alert(res.data.message)
   
  } catch (error) {
-  alert(error.response?.data?.message)
+  alert(error.res?.data?.message)
  }
   }
 
   return(
     <div className="max-w-md mx-auto mt-8 p-6 bg-white shadow-lg rounded-md">
   <h2 className="text-3xl font-semibold mb-6 text-gray-800">Signup</h2>
-  <form action="" className="flex flex-col space-y-5">
+  <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
     <input
       type="email"
       placeholder="Enter email"
@@ -38,7 +38,6 @@ const Signup = () =>{
     />
     <button
       type="submit"
-      onClick={handleSubmit}
       className="bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors"
     >
       Signup
