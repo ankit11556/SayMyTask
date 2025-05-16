@@ -4,7 +4,7 @@ const sendTokenToCookie = require('../utils/sendTokenToCookie')
 const bcrypt = require('bcrypt')
 const sendEmail = require('../services/emailService')
 const generateEmailVerificationToken = require('../utils/generateEmailToken')
-
+const jwt = require('jsonwebtoken')
 //signup
 exports.signup = async (req,res) => {
   try {
@@ -105,13 +105,13 @@ exports.logout = (req,res) =>{
 //verify email
 exports.verifyEmail = async (req,res) => {
   const {token} = req.body;
-
+ 
   if(!token){
     return res.status(400).json({message: "Invalid token"})
   }
 
   try {
-    const decoded = jwt.verify(token,process.env.JWT_EMAIL_SECRET);
+    const decoded = jwt.verify(token,process.env.JWT_EMAIL_SECRET); 
     const user = await User.findById(decoded.userId);
 
     if(!user){
