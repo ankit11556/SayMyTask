@@ -64,7 +64,7 @@ const Navbar = () =>{
             <li className="hover:text-blue-300 cursor-pointer"><Link to="/my-reminders">My Reminders</Link></li>       
           </ul>
           <div className="flex flex-col gap-2 mt-4 ">
-            <button className="bg-white text-blue-600 px-4 py-2 rounded w-full">Log In</button>
+            <button className="bg-white text-blue-600 px-4 py-2 rounded w-full"><Link to="/login">Log In</Link></button>
             <button className="bg-blue-500 px-4 py-2 rounded w-full"><Link to="/sign-up">Sign Up</Link></button>
           </div>
         </div>
