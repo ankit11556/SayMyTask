@@ -148,7 +148,7 @@ exports.refreshAccessToken = (req,res) =>{
 }
 
 exports.checkAuth = (req,res) =>{
-  const accessToken = req.cookies.access_token
+  const accessToken = req.cookies.access_token;
 
   if (!accessToken) {
     return res.status(401).json({message: 'No access token, please login'})
@@ -160,5 +160,6 @@ exports.checkAuth = (req,res) =>{
     }
 
     res.json({ userId: decoded.userId });
+
   })
 }

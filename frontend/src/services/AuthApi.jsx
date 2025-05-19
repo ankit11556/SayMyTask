@@ -22,3 +22,9 @@ export const userLogout = async () => {
      {withCredentials: true},
   )
 }
+
+export const userCheckAuth = async () => {
+  return await axios.get(`${API_URL}/auth/check-auth`,
+    {withCredentials: true}
+  )
+}

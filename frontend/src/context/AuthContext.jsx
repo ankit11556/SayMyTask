@@ -1,17 +1,28 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { userCheckAuth } from "../services/AuthApi";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({children}) =>{
-  const [isAutheticated,setIsAutheticated] = useState(false)
+  const [isAutheticated,setIsAutheticated] = useState(false);
+  const [loading,setLoading] = useState(true);
 
   useEffect(()=>{
-    const token = document.cookie.includes("access_token");
-    setIsAutheticated(token)
+    const checkAuthStatus = async () => {
+      try {
+        await userCheckAuth();
+        setIsAutheticated(true);
+      } catch (error) {
+        setIsAutheticated(false)
+      } finally{
+        setLoading(false)
+      }
+    }
+    checkAuthStatus()
   },[])
 
   return(
-    <AuthContext.Provider value={{isAutheticated,setIsAutheticated}}>
+    <AuthContext.Provider value={{isAutheticated,setIsAutheticated,loading}}>
       {children}
     </AuthContext.Provider>
   )

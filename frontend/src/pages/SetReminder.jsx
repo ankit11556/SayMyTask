@@ -35,6 +35,7 @@ const SetReminder = () =>{
     if (isEditMode) {
       const response = await editReminder(isEditMode._id,{tasks,dateTime})
       alert(response.data.message)
+      console.log(response.data);
       
     } else{
 

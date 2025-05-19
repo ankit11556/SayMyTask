@@ -3,7 +3,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const postReminder = async (reminderData) => {
   return await axios.post(`${API_URL}/reminders`,reminderData,
-    {withCredentials: true},
+    {withCredentials: true}
   )
 }
 
