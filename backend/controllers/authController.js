@@ -160,6 +160,5 @@ exports.checkAuth = (req,res) =>{
     }
 
     res.json({ userId: decoded.userId });
-    
   })
 }
