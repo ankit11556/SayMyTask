@@ -8,7 +8,10 @@ const cookieParser = require('cookie-parser')
 require('./config/db')
  
 
-app.use(cors())
+app.use(cors({
+  origin: process.env.BASE_URL,
+  credentials: true
+}))
 app.use(express.json())
 app.use(cookieParser())
 

@@ -1,16 +1,20 @@
 import { useState } from "react"
 import { userLogin } from "../services/AuthApi";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 const Login = () =>{
   const[email,setEmail] = useState("");
   const[password,setPassword] = useState("")
  const navigate = useNavigate()
+
+ const {setIsAutheticated} = useAuth()
   
   const handleSubmit = async(e) =>{
     e.preventDefault()
     try {
       const res = await userLogin({email,password})
       alert(res.data.message)
+      setIsAutheticated(true)
       navigate("/set-reminder")
     } catch (error) {
       alert(error.res?.data?.message)

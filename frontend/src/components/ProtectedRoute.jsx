@@ -1,8 +1,9 @@
 import {Navigate,Outlet} from "react-router-dom"
-const ProtectedRoute = () =>{
-  const isLoggedIn = !!document.cookie.includes("access_token");
+import { useAuth } from "../context/AuthContext"
 
-  return isLoggedIn ? <Outlet/>:<Navigate to="/login"/>
+const ProtectedRoute = () =>{
+ const {isAutheticated} = useAuth()
+  return isAutheticated? <Outlet/>:<Navigate to="/login"/>
 }
 
 export default ProtectedRoute;

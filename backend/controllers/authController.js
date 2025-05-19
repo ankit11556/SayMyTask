@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const sendEmail = require('../services/emailService')
 const generateEmailVerificationToken = require('../utils/generateEmailToken')
 const jwt = require('jsonwebtoken')
+
 //signup
 exports.signup = async (req,res) => {
   try {
@@ -143,5 +144,22 @@ exports.refreshAccessToken = (req,res) =>{
     sendTokenToCookie(res,accessToken,)
 
     res.json({message: "Nes access token generated successfully"})
+  })
+}
+
+exports.checkAuth = (req,res) =>{
+  const accessToken = req.cookies.access_token
+
+  if (!accessToken) {
+    return res.status(401).json({message: 'No access token, please login'})
+  }
+
+  jwt.verify(accessToken,process.env.JWT_ACCESS_SECRET,(err,decoded)=>{
+    if(err){
+      return res.status(401).json({message: 'Invalid token, please login again'})
+    }
+
+    res.json({ userId: decoded.userId });
+    
   })
 }
