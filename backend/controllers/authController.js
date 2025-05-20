@@ -127,6 +127,7 @@ exports.verifyEmail = async (req,res) => {
   }
 }
 
+//refresh token
 exports.refreshAccessToken = (req,res) =>{
   const refreshToken = req.cookies.refresh_token;
 
@@ -147,6 +148,7 @@ exports.refreshAccessToken = (req,res) =>{
   })
 }
 
+//check auth
 exports.checkAuth = (req,res) =>{
   const accessToken = req.cookies.access_token;
 
