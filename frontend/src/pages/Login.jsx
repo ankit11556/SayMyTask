@@ -7,7 +7,7 @@ const Login = () =>{
   const[password,setPassword] = useState("")
  const navigate = useNavigate()
 
- const {setIsAutheticated} = useAuth()
+ const {setIsAutheticated,setUser} = useAuth()
   
   const handleSubmit = async(e) =>{
     e.preventDefault()
@@ -15,6 +15,7 @@ const Login = () =>{
       const res = await userLogin({email,password})
       alert(res.data.message)
       setIsAutheticated(true)
+      setUser(res.data)
       navigate("/set-reminder")
     } catch (error) {
       alert(error.res?.data?.message)

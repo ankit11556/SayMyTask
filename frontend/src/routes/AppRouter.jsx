@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import {Routes, Route} from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Home from "../pages/Home";
 import SetReminder from "../pages/SetReminder";
@@ -9,7 +9,7 @@ import Signup from "../pages/Signup";
 import ProtectedRoute from "../components/ProtectedRoute";
 const AppRouter = () =>{
   return(
- <Router>
+ <>
 <Navbar></Navbar>
 
 <Routes>
@@ -22,7 +22,7 @@ const AppRouter = () =>{
   <Route path="/sign-up" element={<Signup/>}></Route>
   <Route path="/login" element={<Login/>}></Route>
 </Routes>
- </Router>
+ </>
   )
 }
 

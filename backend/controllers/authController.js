@@ -82,14 +82,14 @@ exports.login = async (req,res) => {
 
 //logout
 exports.logout = (req,res) =>{
-  res.clearCookie('accessToken',{
+  res.clearCookie('access_token',{
     httpOnly: true,
     secure: true,
      path: "/",
     sameSite: 'strict',
   });
 
-  res.clearCookie('refreshToken', {
+  res.clearCookie('refresh_token', {
   httpOnly: true,
   secure: true,
   path: '/',
@@ -158,7 +158,7 @@ exports.checkAuth = (req,res) =>{
     if(err){
       return res.status(401).json({message: 'Invalid token, please login again'})
     }
-
+    
     res.json({ userId: decoded.userId });
 
   })

@@ -1,7 +1,9 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 const Navbar = () =>{
   const [isOpen,setIsOpen] = useState(false)
+  const {user,logout} = useAuth()
   return(
     <>
     <nav className="bg-blue-600 text-white flex justify-between items-center py-4 px-6">
@@ -48,8 +50,14 @@ const Navbar = () =>{
       </ul>
 
      <div className="gap-4 hidden md:flex">
+      {user?(
+        <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+        ):(
+        <>
       <button className="bg-white text-blue-600 px-4 py-2 rounded"><Link to="/login">Log In</Link></button>
       <button className="bg-blue-500 px-4 py-2 rounded"><Link to="/sign-up">Sign Up</Link></button>
+      </>
+      )}
      </div>
     </nav>
 
@@ -64,8 +72,14 @@ const Navbar = () =>{
             <li className="hover:text-blue-300 cursor-pointer"><Link to="/my-reminders">My Reminders</Link></li>       
           </ul>
           <div className="flex flex-col gap-2 mt-4 ">
+            {user?(
+              <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+            ):(
+              <>
             <button className="bg-white text-blue-600 px-4 py-2 rounded w-full"><Link to="/login">Log In</Link></button>
             <button className="bg-blue-500 px-4 py-2 rounded w-full"><Link to="/sign-up">Sign Up</Link></button>
+            </>
+            )}
           </div>
         </div>
       )}
