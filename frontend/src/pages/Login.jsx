@@ -18,7 +18,7 @@ const Login = () =>{
       setUser(res.data)
       navigate("/set-reminder")
     } catch (error) {
-      alert(error.res?.data?.message)
+      alert(error.response?.data?.message)
     }
   }
   return (

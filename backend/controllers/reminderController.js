@@ -4,7 +4,9 @@ exports.createReminder = async (req,res) => {
   try {
     const {  dateTime, tasks} = req.body;
 
-    const newReminder = new Reminder({ dateTime, tasks});
+    const userId = req.user._id
+
+    const newReminder = new Reminder({ dateTime, tasks,userId});
 
     await newReminder.save()
     res.status(201).json({ message: 'Reminder created successfully!' });
@@ -15,7 +17,7 @@ exports.createReminder = async (req,res) => {
 
 exports.getReminders = async (req,res) => {
   try {
-    const reminders = await Reminder.find()
+    const reminders = await Reminder.find({userId: req.user._id})
     res.status(200).json(reminders)
   } catch (error) {
     res.status(500).json({error: error.message})
@@ -28,7 +30,7 @@ exports.editReminder = async (req,res) => {
     const {  dateTime, tasks} = req.body;
 
     const edit = await Reminder.findByIdAndUpdate(
-      id,
+      {_id: id,userId: req.user._id},
       { dateTime, tasks},
       {new: true, runValidators: true}
     )
@@ -46,7 +48,7 @@ exports.editReminder = async (req,res) => {
 exports.deleteReminder = async (req,res) => {
   try {
     const {id} = req.params;
-    const reminder = await Reminder.findByIdAndDelete(id)
+    const reminder = await Reminder.findByIdAndDelete({_id: id,userId: req.user._id})
   
     if (!reminder) {
       return res.status(404).json({message: "reminder not found"});
