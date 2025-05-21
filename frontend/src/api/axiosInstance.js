@@ -4,32 +4,62 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
-  withCredentials: true
+  withCredentials: true,
 });
 
-axiosInstance.interceptors.response.use(
-  (response) =>{
-    return response;
-  },
+let isRefreshing = false;
+let failedQueue = [];
 
-  async(error)=>{
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
+axiosInstance.interceptors.response.use(
+  res => res,
+  async error => {
     const originalRequest = error.config;
 
-    if(error.response?.status === 401 &&  !originalRequest._retry){
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh-token")
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => axiosInstance(originalRequest))
+          .catch(err => Promise.reject(err));
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
-        await axiosInstance.post("/auth/refresh-token");
+        const response = await axiosInstance.post("/auth/refresh-token");
+        console.log("✅ New access token issued:", response.data);
 
-        return axiosInstance(originalRequest)
-      } catch (refreshError) {
-       window.location.href = "/login";
-       return Promise.reject(refreshError) 
+        processQueue(null);
+        return axiosInstance(originalRequest); // Retry failed request
+      } catch (err) {
+        processQueue(err, null);
+        // 👉 Don't auto-redirect here to avoid loop:
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
       }
     }
-    return Promise.reject(error)
+
+    return Promise.reject(error);
   }
+);
 
-)
-
-export default axiosInstance
+export default axiosInstance;

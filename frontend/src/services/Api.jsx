@@ -22,3 +22,7 @@ export const editReminder = async (id,reminderData) => {
 export const deleteReminder = async (id) => {
   return await axios.delete(`${API_URL}/reminders/${id}`, {withCredentials: true},)
 }
+
+export const profileSave = async () => {
+  return 
+}

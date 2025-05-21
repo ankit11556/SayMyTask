@@ -2,7 +2,8 @@ const sendTokenToCookie = (res,accessToken,refreshToken) =>{
   const options = {
     httpOnly: true,
     secure: false,                           //process.env.NODE_ENV === "production",
-    sameSite: "Strict",
+    sameSite: "lax",
+    path: "/"
   };
 
   res.cookie("access_token",accessToken,{

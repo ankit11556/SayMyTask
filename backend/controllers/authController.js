@@ -130,7 +130,6 @@ exports.verifyEmail = async (req,res) => {
 //refresh token
 exports.refreshAccessToken = (req,res) =>{
   const refreshToken = req.cookies.refresh_token;
-
   if(!refreshToken){
     return res.status(401).json({message: "Refresh token missing"});
   }
@@ -140,9 +139,9 @@ exports.refreshAccessToken = (req,res) =>{
       return res.status(403).json({message: 'Invalid refresh token'})
     }
 
-    const {accessToken} = generateToken(decoded.userId);
+    const {accessToken,refreshToken: newRefreshToken} = generateToken(decoded.userId);
 
-    sendTokenToCookie(res,accessToken,)
+    sendTokenToCookie(res,accessToken,newRefreshToken)
 
     res.json({message: "Nes access token generated successfully"})
   })

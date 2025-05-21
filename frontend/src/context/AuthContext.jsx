@@ -9,15 +9,17 @@ export const AuthProvider = ({children}) =>{
   const navigate = useNavigate()
 
   const [isAutheticated,setIsAutheticated] = useState(false);
-
   const [loading,setLoading] = useState(true);
   const [user,setUser] = useState(null)
+
   useEffect(()=>{
     const checkAuthStatus = async () => {
       try {
         const res = await userCheckAuth();
         setIsAutheticated(true);
-        setUser(res.data)
+    
+        setUser(res.data.userId)
+        
       } catch (error) {
         setIsAutheticated(false)
         setUser(null); 
@@ -31,7 +33,7 @@ export const AuthProvider = ({children}) =>{
   const logout = async () => {
     try {
      const res = await userLogout();
-     alert(res.data.message)
+      alert(res.data.message)
       setUser(null)
       setIsAutheticated(false)
       navigate("/login")

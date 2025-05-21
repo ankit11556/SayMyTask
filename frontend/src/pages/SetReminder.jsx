@@ -5,6 +5,8 @@ import { useLocation } from "react-router-dom";
 
 const SetReminder = () =>{
 
+  const [hasProfile,setHasProfile] = useState(null)
+
  const navigate = useNavigate()
  
  const location = useLocation()
