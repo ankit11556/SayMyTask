@@ -17,10 +17,11 @@ app.use(cookieParser())
 
 const reminderRouter = require('./routes/reminderRoutes')
 const authRouter = require('./routes/authRoutes')
+const userProfileRouter = require('./routes/userProfileRoutes')
 
 app.use("/api/reminders",reminderRouter)
 app.use("/api/auth",authRouter)
-
+app.use("/api/user-profile",userProfileRouter)
 
 const PORT = process.env.PORT
 
