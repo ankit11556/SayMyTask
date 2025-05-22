@@ -15,7 +15,10 @@ exports.createUserProfile = async (req,res) => {
    }
 
     const newProfile = await UserProfile.create({userId,name,language})
-    res.status(201).json({newProfile})
+    res.status(201).json({message:"Profile create successfully", newProfile: {
+    name: newProfile.name,
+    language: newProfile.language,
+  },})
   } catch (error) {
     res.status(500).json({ message: 'Failed to create profile' });
   }

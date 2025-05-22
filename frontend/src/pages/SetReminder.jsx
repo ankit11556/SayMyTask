@@ -1,12 +1,14 @@
 import {  useEffect, useState } from "react"
-import { editReminder, postReminder } from "../services/Api";
+import { editReminder, postReminder, profileGet } from "../services/Api";
 import {useNavigate} from "react-router-dom"
 import { useLocation } from "react-router-dom";
-
+import UserProfile from "./UserProfileForm";
+import { useAuth } from "../context/AuthContext";
 const SetReminder = () =>{
 
-  const [hasProfile,setHasProfile] = useState(null)
-
+  const {user,setUser} = useAuth();
+  const [showProfileForm,setShowProfileForm] = useState(true)
+ 
  const navigate = useNavigate()
  
  const location = useLocation()
@@ -16,6 +18,32 @@ const SetReminder = () =>{
   const [date,setDate] = useState("");
   const [time,setTime] = useState("");
   const dateTime = `${date}T${time}`
+
+  useEffect(()=>{
+    const fetchUserProfile = async () => {
+      try {
+        const response = await profileGet();
+        console.log(response);
+        
+        const [{name,language}] = response.data;
+        setUser((prevUser) =>({
+          ...prevUser,
+          name,
+          language
+        }))
+      } catch (error) {
+        console.log("User profile fetch failed", err);
+      };
+    };
+
+    if(!user.name || !user.language){
+      fetchUserProfile()
+    }
+  },[])
+
+  useEffect(()=>{
+    setShowProfileForm(!(user.name && user.language));
+  },[user])
 
  useEffect(()=>{
   if(isEditMode){
@@ -49,6 +77,10 @@ const SetReminder = () =>{
   } catch (error) {
     alert(error.response?.data?.error)
   }
+};
+
+if (showProfileForm) {
+  return <UserProfile onComplete={()=> setShowProfileForm(false)}/>
 }
   
   return (

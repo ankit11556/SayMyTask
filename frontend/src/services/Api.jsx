@@ -23,6 +23,14 @@ export const deleteReminder = async (id) => {
   return await axios.delete(`${API_URL}/reminders/${id}`, {withCredentials: true},)
 }
 
-export const profileSave = async () => {
-  return 
+export const profileSave = async (data) => {
+  return await axios.post(`${API_URL}/user-profile`,data,
+    {withCredentials: true},
+  )
+}
+
+export const profileGet = async()=>{
+  return await axios.get(`${API_URL}/user-profile`,
+    {withCredentials: true}
+  )
 }
