@@ -8,118 +8,147 @@ const MyReminders = () => {
   const { user } = useAuth();
 
   const [reminders, setReminders] = useState([]);
-  const [notifieldIds, setNotfieldIds] = useState(new Set());
+  const [notifieldIds, setNotifieldIds] = useState(new Set());
   const [showStopPopup, setShowStopPopup] = useState(false);
   const [currentTask, setCurrentTask] = useState("");
-  const utteranceRef = useRef(null); // For speechSynthesis utterance
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
-  // Fetch reminders from API
-  const fetch = async () => {
-    try {
-      const response = await getReminder();
-      setReminders(response.data);
-    } catch (error) {
-      console.log(error.response?.data?.error);
-    }
-  };
+  const voicesRef = useRef([]);
+  const currentReminderRef = useRef(null);
+  const intervalRef = useRef(null);
+  const isSpeakingRef = useRef(false);  // <-- Added to hold mutable speaking state
 
+  // Load voices once
   useEffect(() => {
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        voicesRef.current = voices;
+      }
+    };
+
+    if ("speechSynthesis" in window) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+  }, []);
+
+  // Fetch reminders once
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const response = await getReminder();
+        setReminders(response.data);
+      } catch (error) {
+        console.log(error.response?.data?.error);
+      }
+    };
     fetch();
   }, []);
 
-  // Speak reminder based on language using speechSynthesis only
-  const speakReminder = (task) => {
-    if (!("speechSynthesis" in window)) {
-      alert("Sorry, your browser does not support Text to Speech.");
-      return;
+  const getVoice = () => {
+    const voices = voicesRef.current;
+    if (user.language === "hindi") {
+      const hiVoice = voices.find(
+        (v) => v.lang === "hi-IN" || v.lang.toLowerCase().includes("hi")
+      );
+      if (hiVoice) return hiVoice;
     }
+    const enVoice = voices.find((v) => v.lang.toLowerCase().startsWith("en"));
+    return enVoice || voices[0];
+  };
 
-    // Cancel ongoing speech before starting new
-    window.speechSynthesis.cancel();
+  const speakLoop = (task, reminderId) => {
+    if (currentReminderRef.current === reminderId) return;
 
-    // Build message
     const message =
       user.language === "hindi"
         ? `${user.name} जी, ${task} करने का समय हो गया है।`
         : `${user.name}, it's time to ${task}.`;
 
-    const utterance = new SpeechSynthesisUtterance(message);
+    currentReminderRef.current = reminderId;
+    setCurrentTask(task);
+    setShowStopPopup(true);
 
-    // Adjust voice rate and pitch for clarity
+    isSpeakingRef.current = true;
+    setIsSpeaking(true);
+
+    const voice = getVoice();
+
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.voice = voice;
+    utterance.lang = voice?.lang || (user.language === "hindi" ? "hi-IN" : "en-US");
     utterance.rate = 0.8;
     utterance.pitch = 1;
 
-    // Get available voices
-    const voices = window.speechSynthesis.getVoices();
-
-    // Select voice based on language preference
-    let selectedVoice = null;
-    if (user.language === "hindi") {
-      selectedVoice = voices.find((v) => v.lang.startsWith("hi"));
-    }
-    if (!selectedVoice) {
-      selectedVoice = voices.find((v) => v.lang.startsWith("en"));
-    }
-    if (!selectedVoice && voices.length > 0) {
-      selectedVoice = voices[0]; // fallback voice
-    }
-
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-      utterance.lang = selectedVoice.lang;
-    } else {
-      // fallback language code
-      utterance.lang = user.language === "hindi" ? "hi-IN" : "en-US";
-    }
-
     utterance.onend = () => {
-      setShowStopPopup(false);
-      setCurrentTask("");
+      if (isSpeakingRef.current && currentReminderRef.current === reminderId) {
+        setTimeout(() => {
+          if (isSpeakingRef.current && currentReminderRef.current === reminderId) {
+            window.speechSynthesis.speak(utterance);
+          }
+        }, 1000);
+      }
     };
 
-    utteranceRef.current = utterance;
+    window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
-
-    setShowStopPopup(true);
-    setCurrentTask(message);
   };
 
-  // Stop speaking / playing audio
   const stopSpeaking = () => {
+    isSpeakingRef.current = false;
+    setIsSpeaking(false);
     window.speechSynthesis.cancel();
+
+    if (currentReminderRef.current) {
+      setNotifieldIds((prev) => {
+        const updated = new Set(prev);
+        updated.add(currentReminderRef.current);
+        return updated;
+      });
+    }
+
+    currentReminderRef.current = null;
     setShowStopPopup(false);
     setCurrentTask("");
   };
 
-  // Reminder check interval - every 5 seconds check if any reminder is due
+  // Check reminders every second
   useEffect(() => {
-    const interval = setInterval(() => {
+    if (!reminders.length) return;
+
+    intervalRef.current = setInterval(() => {
       const now = new Date();
 
       reminders.forEach((reminder) => {
         const reminderTime = new Date(reminder.dateTime);
+        const timeDiff = reminderTime - now;
 
-        if (reminderTime <= now && !notifieldIds.has(reminder._id)) {
-          speakReminder(reminder.tasks);
-          setNotfieldIds((prev) => new Set(prev).add(reminder._id));
+        if (
+          Math.abs(timeDiff) <= 2000 && // 2 second tolerance
+          reminderTime <= now &&
+          !notifieldIds.has(reminder._id)
+        ) {
+          speakLoop(reminder.tasks, reminder._id);
+          setNotifieldIds((prev) => {
+            const updated = new Set(prev);
+            updated.add(reminder._id);
+            return updated;
+          });
         }
       });
-    }, 5000);
+    }, 1000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(intervalRef.current);
   }, [reminders, notifieldIds]);
 
-  // Delete reminder handler
   const handleDelete = async (id) => {
     try {
       const response = await deleteReminder(id);
       alert(response.data.message);
-      const updatedReminders = reminders.filter(
-        (reminder) => reminder._id !== id
-      );
+      const updatedReminders = reminders.filter((r) => r._id !== id);
       setReminders(updatedReminders);
-
-      setNotfieldIds((prev) => {
+      setNotifieldIds((prev) => {
         const copy = new Set(prev);
         copy.delete(id);
         return copy;
@@ -128,18 +157,6 @@ const MyReminders = () => {
       alert(error.response?.data?.message);
     }
   };
-
-  // Load voices on mount to avoid delayed voice list loading
-  useEffect(() => {
-    if ("speechSynthesis" in window) {
-      // Force load voices
-      const loadVoices = () => {
-        window.speechSynthesis.getVoices();
-      };
-      loadVoices();
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-    }
-  }, []);
 
   return (
     <div className="max-w-3xl mx-auto p-4 relative">
@@ -158,14 +175,13 @@ const MyReminders = () => {
               <p className="text-gray-500 text-sm">
                 {new Date(reminder.dateTime).toLocaleString()}
               </p>
-              <div className="flex space-x-3 mt-3 ">
+              <div className="flex space-x-3 mt-3">
                 <button
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
                   onClick={() => handleDelete(reminder._id)}
                 >
                   Delete
                 </button>
-
                 <button
                   className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
                   onClick={() =>
@@ -180,16 +196,15 @@ const MyReminders = () => {
         </ul>
       )}
 
-      {/* Stop popup */}
       {showStopPopup && (
         <div
           className="fixed bottom-5 right-5 bg-white border border-gray-300 shadow-lg rounded p-4 flex items-center space-x-4 z-50"
           style={{ minWidth: "280px" }}
         >
-          <p className="font-medium">
+          <p className="font-medium text-gray-800">
             {user.language === "hindi"
-              ? `${user.name}, आपकी याददाश्त: "${currentTask}" पूरा हो गया है।`
-              : `${user.name}, Reminder: "${currentTask}" is running.`}
+              ? `${user.name}, याद दिलाया जा रहा है: "${user.name} जी, ${currentTask} करने का समय हो गया है।"`
+              : `${user.name}, Reminder: "${user.name}, it's time to ${currentTask}." is running.`}
           </p>
           <button
             className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
