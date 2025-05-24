@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { deleteReminder, getReminder } from "../services/Api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { translateText } from "../services/translateText";
 
 const MyReminders = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const MyReminders = () => {
   const [showStopPopup, setShowStopPopup] = useState(false);
   const [currentTask, setCurrentTask] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [translatedMessage, setTranslatedMessage] = useState("");
 
   const voicesRef = useRef([]);
   const currentReminderRef = useRef(null);
@@ -46,54 +48,86 @@ const MyReminders = () => {
     fetch();
   }, []);
 
-  const getVoice = () => {
-    const voices = voicesRef.current;
-    if (user.language === "hindi") {
-      const hiVoice = voices.find(
-        (v) => v.lang === "hi-IN" || v.lang.toLowerCase().includes("hi")
-      );
-      if (hiVoice) return hiVoice;
-    }
-    const enVoice = voices.find((v) => v.lang.toLowerCase().startsWith("en"));
-    return enVoice || voices[0];
-  };
+ const getVoice = () => {
+  const voices = voicesRef.current;
+  console.log("Available voices:", voices.map(v => `${v.name} (${v.lang})`));
 
-  const speakLoop = (task, reminderId) => {
-    if (currentReminderRef.current === reminderId) return;
+  if (user.language === "hindi") {
+    const hiVoice = voices.find(
+      (v) => v.lang === "hi-IN" || v.lang.toLowerCase().includes("hi")
+    );
+    console.log("Selected Hindi voice:", hiVoice);
+    if (hiVoice) return hiVoice;
+  }
 
-    const message =
-      user.language === "hindi"
-        ? `${user.name} जी, ${task} करने का समय हो गया है।`
-        : `${user.name}, it's time to ${task}.`;
+  const enVoice = voices.find((v) => v.lang.toLowerCase().startsWith("en"));
+  return enVoice || voices[0];
+};
 
-    currentReminderRef.current = reminderId;
-    setCurrentTask(task);
-    setShowStopPopup(true);
 
-    isSpeakingRef.current = true;
-    setIsSpeaking(true);
+  const speakLoop = async (task, reminderId) => {
+  if (currentReminderRef.current === reminderId) return;
 
-    const voice = getVoice();
+  const englishSentence = `${user.name}, it's time to ${task}.`;
 
-    const utterance = new SpeechSynthesisUtterance(message);
-    utterance.voice = voice;
-    utterance.lang = voice?.lang || (user.language === "hindi" ? "hi-IN" : "en-US");
-    utterance.rate = 0.8;
-    utterance.pitch = 1;
+  // 👇 Translate based on user.language
+  let finalMessage = englishSentence;
 
-    utterance.onend = () => {
-      if (isSpeakingRef.current && currentReminderRef.current === reminderId) {
-        setTimeout(() => {
-          if (isSpeakingRef.current && currentReminderRef.current === reminderId) {
-            window.speechSynthesis.speak(utterance);
-          }
-        }, 1000);
-      }
+  if (user.language !== "english") {
+    console.log("language",user.langMap);
+    
+    const langMap = {
+      hindi: "hi",
+      bengali: "bn",
+      marathi: "mr",
+      tamil: "ta",
+      telugu: "te",
+      gujarati: "gu"
     };
+    const targetLang = langMap[user.language.toLowerCase()] || "en";
 
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    try {
+      finalMessage = await translateText(englishSentence, targetLang);
+      console.log("Translated message:", finalMessage);
+    } catch (err) {
+      console.error("Translation failed. Using English fallback.");
+      finalMessage = englishSentence;
+    }
+  }
+
+  setTranslatedMessage(finalMessage); // 👈 This makes it available in JSX
+
+  currentReminderRef.current = reminderId;
+  setCurrentTask(task);
+  setShowStopPopup(true);
+
+  isSpeakingRef.current = true;
+  setIsSpeaking(true);
+
+  const voice = getVoice();
+
+  const utterance = new SpeechSynthesisUtterance(finalMessage);
+  // console.log("Final message to speak:", finalMessage);
+  utterance.voice = voice;
+  utterance.lang = voice?.lang || "en-US";
+  utterance.rate = 0.8;
+  utterance.pitch = 1;
+
+  utterance.onend = () => {
+    if (isSpeakingRef.current && currentReminderRef.current === reminderId) {
+      setTimeout(() => {
+        if (isSpeakingRef.current && currentReminderRef.current === reminderId) {
+          window.speechSynthesis.speak(utterance);
+        }
+      }, 1000);
+    }
   };
+
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
+};
+
+
 
   const stopSpeaking = () => {
     isSpeakingRef.current = false;
@@ -197,22 +231,24 @@ const MyReminders = () => {
       )}
 
       {showStopPopup && (
-        <div
-          className="fixed bottom-5 right-5 bg-white border border-gray-300 shadow-lg rounded p-4 flex items-center space-x-4 z-50"
-          style={{ minWidth: "280px" }}
-        >
-          <p className="font-medium text-gray-800">
-            {user.language === "hindi"
-              ? `${user.name}, याद दिलाया जा रहा है: "${user.name} जी, ${currentTask} करने का समय हो गया है।"`
-              : `${user.name}, Reminder: "${user.name}, it's time to ${currentTask}." is running.`}
-          </p>
-          <button
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-            onClick={stopSpeaking}
-          >
-            Stop
-          </button>
-        </div>
+  <div
+    className="fixed bottom-5 right-5 bg-white border border-gray-300 shadow-lg rounded p-4 flex items-center space-x-4 z-50"
+    style={{ minWidth: "280px" }}
+  >
+    <p className="font-medium text-gray-800">
+      {user.language === "english"
+        ? `${user.name}, Reminder: "it's time to ${currentTask}." `
+        : `${user.name}, Reminder: "${translatedMessage}"`}
+    </p>
+    <button
+      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+      onClick={stopSpeaking}
+    >
+      Stop
+    </button>
+  </div>
+
+
       )}
     </div>
   );
