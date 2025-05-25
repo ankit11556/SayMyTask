@@ -23,8 +23,6 @@ const SetReminder = () =>{
     const fetchUserProfile = async () => {
       try {
         const response = await profileGet();
-        console.log(response);
-        
         const [{name,language}] = response.data;
         setUser((prevUser) =>({
           ...prevUser,
@@ -65,10 +63,7 @@ const SetReminder = () =>{
     if (isEditMode) {
       const response = await editReminder(isEditMode._id,{tasks,dateTime})
       alert(response.data.message)
-      console.log(response.data);
-      
     } else{
-
     const response = await postReminder({tasks,dateTime})
     alert(response.data.message)
     

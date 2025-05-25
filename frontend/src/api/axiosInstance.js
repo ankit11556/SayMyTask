@@ -44,14 +44,11 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await axiosInstance.post("/auth/refresh-token");
-        console.log("✅ New access token issued:", response.data);
-
+       await axiosInstance.post("/auth/refresh-token");
         processQueue(null);
-        return axiosInstance(originalRequest); // Retry failed request
+        return axiosInstance(originalRequest); 
       } catch (err) {
         processQueue(err, null);
-        // 👉 Don't auto-redirect here to avoid loop:
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
