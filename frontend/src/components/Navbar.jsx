@@ -4,10 +4,12 @@ import { useAuth } from "../context/AuthContext"
 const Navbar = () =>{
   const [isOpen,setIsOpen] = useState(false)
   const {user,logout} = useAuth()
+
   return(
     <>
-    <nav className="bg-blue-600 text-white flex justify-between items-center py-4 px-6">
-        <h1 className="text-lg font-bold">TimeCue</h1>
+    <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white flex justify-between items-center py-4 px-6 font-poppins shadow-md">
+
+        <h1 className="text-2xl font-bold tracking-wide">TimeCue</h1>
 
 {/* Mobile icon */}
  <div className="md:hidden" aria-label="Toggle Menu" onClick={() => setIsOpen(!isOpen)}>
@@ -43,19 +45,25 @@ const Navbar = () =>{
   </div>
    
   {/* desktop */}
-      <ul className="hidden md:flex space-x-6 flex-1 justify-center">
-        <li className="hover:text-blue-300 hover:cursor-pointer"><Link to="/">Home</Link></li>
-        <li className="hover:text-blue-300 hover:cursor-pointer"><Link to="/set-reminder">Set Reminder</Link></li>
-        <li className="hover:text-blue-300 hover:cursor-pointer"><Link to="/my-reminders">My Reminders</Link></li>
-      </ul>
+      <ul className="hidden md:flex space-x-8 text-lg font-medium">
+       <li className="hover:text-cyan-300 transition-colors duration-300"><Link to="/">Home</Link></li>
+       <li className="hover:text-cyan-300 transition-colors duration-300"><Link to="/set-reminder">Set Reminder</Link></li>
+       <li className="hover:text-cyan-300 transition-colors duration-300"><Link to="/my-reminders">My Reminders</Link></li>
+     </ul>
+
 
      <div className="gap-4 hidden md:flex">
       {user?(
-        <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+        <button
+             onClick={logout}
+             className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-md hover:scale-105 hover:brightness-110 transition-all duration-300"
+               >
+               Logout
+             </button>
         ):(
         <>
-      <button className="bg-white text-blue-600 px-4 py-2 rounded"><Link to="/login">Log In</Link></button>
-      <button className="bg-blue-500 px-4 py-2 rounded"><Link to="/sign-up">Sign Up</Link></button>
+     <button className="bg-white text-blue-600 px-4 py-2 rounded shadow hover:scale-105 transition-transform"><Link to="/login">Log In</Link></button>
+    <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded shadow hover:scale-105 transition-transform"><Link to="/sign-up">Sign Up</Link></button>
       </>
       )}
      </div>
@@ -64,20 +72,25 @@ const Navbar = () =>{
 
     {/* Mobile menu */}
     {isOpen && (
-       <div className="md:hidden flex flex-col items-start space-y-4 mt-4 px-6 py-4 bg-blue-600 text-white shadow-md rounded transition-all duration-300">
+       <div className="md:hidden flex flex-col items-start space-y-4 mt-4 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg rounded-md transition-all duration-300">
 
           <ul className="space-y-2">
-            <li className="hover:text-blue-300 cursor-pointer"><Link to="/">Home</Link></li>
-            <li className="hover:text-blue-300 cursor-pointer"><Link to="/set-reminder">Set Reminder</Link></li>
-            <li className="hover:text-blue-300 cursor-pointer"><Link to="/my-reminders">My Reminders</Link></li>       
+            <li className="hover:text-cyan-300 transition-colors duration-300 cursor-pointer"><Link to="/">Home</Link></li>
+            <li className="hover:text-cyan-300 transition-colors duration-300 cursor-pointer"><Link to="/set-reminder">Set Reminder</Link></li>
+            <li className="hover:text-cyan-300 transition-colors duration-300 cursor-pointer"><Link to="/my-reminders">My Reminders</Link></li>       
           </ul>
           <div className="flex flex-col gap-2 mt-4 ">
             {user?(
-              <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+              <button
+               onClick={logout}
+                className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-md hover:scale-105 hover:brightness-110 transition-all duration-300"
+                  >
+                 Logout
+                 </button>
             ):(
               <>
-            <button className="bg-white text-blue-600 px-4 py-2 rounded w-full"><Link to="/login">Log In</Link></button>
-            <button className="bg-blue-500 px-4 py-2 rounded w-full"><Link to="/sign-up">Sign Up</Link></button>
+            <button className="bg-white text-blue-600 px-4 py-2 rounded shadow hover:scale-105 transition-transform"><Link to="/login">Log In</Link></button>
+           <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded shadow hover:scale-105 transition-transform"><Link to="/sign-up">Sign Up</Link></button>
             </>
             )}
           </div>
