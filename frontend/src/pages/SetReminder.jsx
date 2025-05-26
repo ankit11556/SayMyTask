@@ -1,120 +1,129 @@
-import {  useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { editReminder, postReminder, profileGet } from "../services/Api";
-import {useNavigate} from "react-router-dom"
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import UserProfile from "./UserProfileForm";
 import { useAuth } from "../context/AuthContext";
-const SetReminder = () =>{
 
-  const {user,setUser} = useAuth();
-  const [showProfileForm,setShowProfileForm] = useState(true)
- 
- const navigate = useNavigate()
- 
- const location = useLocation()
- const isEditMode = location.state?.reminders || null;
+const SetReminder = () => {
+  const { user, setUser } = useAuth();
+  const [showProfileForm, setShowProfileForm] = useState(true);
 
-  const [tasks,setTask] = useState("");
-  const [date,setDate] = useState("");
-  const [time,setTime] = useState("");
-  const dateTime = `${date}T${time}`
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isEditMode = location.state?.reminders || null;
 
-  useEffect(()=>{
+  const [tasks, setTask] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const dateTime = `${date}T${time}`;
+
+  useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const response = await profileGet();
-        const [{name,language}] = response.data;
-        setUser((prevUser) =>({
+        const [{ name, language }] = response.data;
+        setUser((prevUser) => ({
           ...prevUser,
           name,
-          language
-        }))
+          language,
+        }));
       } catch (error) {
-        console.log("User profile fetch failed", err);
-      };
+        console.log("User profile fetch failed", error);
+      }
     };
 
-    if(!user.name || !user.language){
-      fetchUserProfile()
+    if (!user.name || !user.language) {
+      fetchUserProfile();
     }
-  },[])
+  }, [user.name, user.language, setUser]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setShowProfileForm(!(user.name && user.language));
-  },[user])
+  }, [user]);
 
- useEffect(()=>{
-  if(isEditMode){
-    setTask(isEditMode.tasks)  
-    
-   const localDateTime = new Date(isEditMode.dateTime);
+  useEffect(() => {
+    if (isEditMode) {
+      setTask(isEditMode.tasks);
 
+      const localDateTime = new Date(isEditMode.dateTime);
       const dateStr = localDateTime.toISOString().slice(0, 10);
       setDate(dateStr);
 
       const timeStr = localDateTime.toTimeString().slice(0, 5);
       setTime(timeStr);
-  }
- },[])
- 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    if (isEditMode) {
-      const response = await editReminder(isEditMode._id,{tasks,dateTime})
-      alert(response.data.message)
-    } else{
-    const response = await postReminder({tasks,dateTime})
-    alert(response.data.message)
-    
     }
-    navigate("/my-reminders")
-  } catch (error) {
-    alert(error.response?.data?.error)
+  }, [isEditMode]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (isEditMode) {
+        const response = await editReminder(isEditMode._id, { tasks, dateTime });
+        alert(response.data.message);
+      } else {
+        const response = await postReminder({ tasks, dateTime });
+        alert(response.data.message);
+      }
+      navigate("/my-reminders");
+    } catch (error) {
+      alert(error.response?.data?.error || "Something went wrong!");
+    }
+  };
+
+  if (showProfileForm) {
+    return <UserProfile onComplete={() => setShowProfileForm(false)} />;
   }
+
+  return (
+    <section className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+      <div className="bg-white p-8 rounded-xl shadow-lg max-w-xl w-full">
+        <h2 className="text-3xl font-semibold text-blue-700 mb-6 text-center">Set Your Reminder</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block mb-2 text-blue-600 font-semibold text-lg">Reminder Task</label>
+            <textarea
+              placeholder="e.g. Attend meeting at 5 PM"
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              rows="4"
+              value={tasks}
+              onChange={(e) => setTask(e.target.value)}
+              required
+            ></textarea>
+          </div>
+
+          <div>
+            <label className="block mb-2 text-blue-600 font-semibold text-lg">Date</label>
+            <input
+              type="date"
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 text-blue-600 font-semibold text-lg">Time</label>
+            <input
+              type="time"
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 rounded-lg hover:scale-105 transform transition-transform shadow-md"
+          >
+            {isEditMode ? "Update Reminder" : "Set Reminder"}
+          </button>
+        </form>
+      </div>
+    </section>
+  );
 };
 
-if (showProfileForm) {
-  return <UserProfile onComplete={()=> setShowProfileForm(false)}/>
-}
-  
-  return (
-    <section className="bg-white p-6 max-w-xl mx-auto mt-6 rounded shadow">
-  <h2 className="text-2xl font-bold text-blue-700 mb-4 text-center">Set Your Reminder</h2>
-
-  <form onSubmit={handleSubmit} className="space-y-4">
-    
-    <div>
-      <label className="block text-blue-600 font-semibold mb-1">Reminder Task</label>
-      <textarea placeholder="e.g. Attend meeting at 5 PM" className="w-full border p-2 rounded" rows="3"
-      value={tasks}
-      onChange={(e)=>setTask(e.target.value)}
-      ></textarea>
-    </div>
-
-    <div>
-      <label className="block text-blue-600 font-semibold mb-1">Date</label>
-      <input type="date" className="w-full border p-2 rounded" 
-      value={date}
-      onChange={(e)=>setDate(e.target.value)}
-      />
-    </div>
-
-    <div>
-      <label className="block text-blue-600 font-semibold mb-1">Time</label>
-      <input type="time" className="w-full border p-2 rounded" 
-      value={time}
-      onChange={(e)=>setTime(e.target.value)}
-      />
-    </div>
-
-    <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-full">
-    {isEditMode ? "Update Reminder" : "Set Reminder"}
-    </button>
-  </form>
-</section>
-
-  )
-}
-
-export default SetReminder
+export default SetReminder;
