@@ -1,7 +1,7 @@
 const sendTokenToCookie = (res,accessToken,refreshToken) =>{
   const options = {
     httpOnly: true,
-    secure: false,                           //process.env.NODE_ENV === "production",
+    secure: true,                           //process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/"
   };

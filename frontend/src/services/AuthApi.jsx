@@ -6,8 +6,7 @@ export const userSignup = async (data) => {
 }
 
 export const userLogin = async (data) => {
-  return await axiosInstance.post(`/auth/login`,data
-  )
+  return await axiosInstance.post(`/auth/login`,data)
 }
 
 export const verifyEmailApi = async (token) => {

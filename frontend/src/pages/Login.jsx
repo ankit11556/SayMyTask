@@ -18,7 +18,9 @@ const Login = () => {
       setUser(res.data);
       navigate("/set-reminder");
     } catch (error) {
-      alert(error.response?.data?.message);
+      console.log("Error object:", error);
+     const errorMessage = error?.response?.data?.message || "Something went wrong!";
+    alert(errorMessage);
     }
   };
 
