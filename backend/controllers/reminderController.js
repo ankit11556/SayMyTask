@@ -5,7 +5,7 @@ exports.createReminder = async (req,res) => {
     const {  dateTime, tasks} = req.body;
 
     const userId = req.user._id
-
+    
     const newReminder = new Reminder({ dateTime, tasks,userId});
 
     await newReminder.save()
@@ -36,7 +36,7 @@ exports.editReminder = async (req,res) => {
     )
 
     if(!edit){
-      return res.status(404).json({error: 'Reminder note found'})
+      return res.status(404).json({error: 'Reminder not found'})
     }
 
     res.status(200).json({ message: 'Reminder updated successfully',edit});

@@ -9,13 +9,19 @@ const userProfileSchema = new mongoose.Schema({
    },
    name: {
     type: String,
-    required: true,
+    required: [true,'Name is required'],
+    trim: true,
+    minlength: [2,'Name must be at 2 charactors'],
+    maxlength: [50,'Name must be less than 50 characters']
    },
    language:{
     type: String,
-    required: true,
+    required: [true,'Language is required'],
+    trim: true
    }
-})
+},{timestamps: true})
+
+
 
 const UserProfile = mongoose.model('UserProfile',userProfileSchema);
 

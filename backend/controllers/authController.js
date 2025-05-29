@@ -67,7 +67,7 @@ exports.login = async (req,res) => {
     const {accessToken,refreshToken} = generateToken(user._id)
 
     sendTokenToCookie(res,accessToken,refreshToken)
-
+    
     const {_id,name}  = user;
     res.status(200).json({
       message: 'Login successful',
@@ -155,12 +155,11 @@ exports.checkAuth = (req,res) =>{
     return res.status(401).json({message: 'No access token, please login'})
   }
 
-  jwt.verify(accessToken,process.env.JWT_ACCESS_SECRET,(err,decoded)=>{
+   jwt.verify(accessToken,process.env.JWT_ACCESS_SECRET,(err,decoded)=>{
     if(err){
       return res.status(401).json({message: 'Invalid token, please login again'})
     }
     
     res.json({ userId: decoded.userId });
-
   })
 }
