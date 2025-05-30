@@ -64,7 +64,7 @@ exports.login = async (req,res) => {
       return res.status(401).json({message: 'Invalid credentials'})
     }
 
-    const {accessToken,refreshToken} = generateToken(user._id)
+    const {accessToken,refreshToken} = generateToken(user._id,user.role)
 
     sendTokenToCookie(res,accessToken,refreshToken)
     

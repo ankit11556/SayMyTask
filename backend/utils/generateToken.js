@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-const generateToken = (userId) =>{
+const generateToken = (userId,role) =>{
   try {
   const accessToken = jwt.sign(
     {userId, role, type: "access"},
