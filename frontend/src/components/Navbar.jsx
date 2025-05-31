@@ -1,15 +1,23 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import Logo from '../assets/logo.png'
 const Navbar = () =>{
   const [isOpen,setIsOpen] = useState(false)
   const {user,logout} = useAuth()
 
   return(
     <>
-    <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white flex justify-between items-center py-4 px-6 font-poppins shadow-md">
+    <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white flex justify-between items-center py-3 px-6 font-poppins shadow-md">
 
-        <h1 className="text-2xl font-bold tracking-wide">TimeCue</h1>
+  <div className="h-16 w-44 flex items-center ">
+  <img 
+    src={Logo} 
+    alt="SayMyTask Logo" 
+    className="h-full w-auto object-contain scale-150 ml-10" 
+  />
+</div>
+
 
 {/* Mobile icon */}
  <div className="md:hidden" aria-label="Toggle Menu" onClick={() => setIsOpen(!isOpen)}>

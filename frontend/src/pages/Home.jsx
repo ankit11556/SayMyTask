@@ -8,15 +8,18 @@ const Home = () => {
 
       {/* Features Section */}
       <section className="py-16 px-6 bg-white text-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-10 font-[Poppins]">Why TimeCue?</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-10 font-[Poppins]">Why SayMyTask?</h2>
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="bg-blue-100 p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
             <h3 className="text-xl font-semibold mb-2 text-blue-700 font-[Poppins]">Voice Reminders</h3>
             <p className="text-gray-700 font-[Poppins]">Get reminded in your own voice. More personal, more effective!</p>
           </div>
           <div className="bg-indigo-100 p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
-            <h3 className="text-xl font-semibold mb-2 text-indigo-700 font-[Poppins]">Multiple Languages</h3>
-            <p className="text-gray-700 font-[Poppins]">Set reminders in Hindi, English, Telugu, or more!</p>
+           <h3 className="text-xl font-semibold mb-2 text-indigo-700 font-[Poppins]">Language Support</h3>
+           <p className="text-gray-700 font-[Poppins]">
+            Currently, reminders are supported only in English.<br />
+            Multi-language support coming soon!
+            </p>
           </div>
           <div className="bg-pink-100 p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
             <h3 className="text-xl font-semibold mb-2 text-pink-600 font-[Poppins]">One-Time or Scheduled</h3>
