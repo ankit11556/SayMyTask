@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import HeroSection from "../components/HeroSection";
 import { Link } from "react-router-dom";
-
+import Footer from "../components/Footer";
 const Home = () => {
   const demoRef = useRef(null);
 
@@ -88,6 +88,10 @@ const Home = () => {
           Set a Reminder
         </Link>
       </section>
+
+       
+        <Footer></Footer>
+       
     </>
   );
 };

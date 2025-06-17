@@ -15,7 +15,7 @@ const HeroSection = ({ onDemoClick }) => {
       
       <Link
         to="/set-reminder"
-        className="inline-block bg-[#F472B6] text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:scale-105 transform hover:bg-pink-600 transition-all duration-300"
+        className="inline-block bg-[#f472b5] text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:scale-105 transform hover:bg-pink-500 transition-all duration-300"
       >
         Set a Reminder
       </Link>
@@ -25,7 +25,7 @@ const HeroSection = ({ onDemoClick }) => {
        onClick={onDemoClick}
         className="mt-6 block mx-auto text-white underline hover:text-pink-200 font-[Poppins] hover:cursor-pointer"
       >
-         Try a Demo Voice Reminder
+          Try a Demo Voice Reminder 
       </button>
     </section>
   );
