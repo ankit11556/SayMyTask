@@ -18,7 +18,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8 font-poppins">Signup to TimeCue</h2>
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8 font-poppins">Signup to SayMyTask</h2>
         <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
           <input
             type="email"

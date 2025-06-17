@@ -1,10 +1,40 @@
+import { useRef } from "react";
 import HeroSection from "../components/HeroSection";
 import { Link } from "react-router-dom";
 
 const Home = () => {
+  const demoRef = useRef(null);
+
+  const handleScrollToDemo = () => {
+    demoRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <>
-      <HeroSection />
+      <HeroSection onDemoClick={handleScrollToDemo}/>
+
+      {/* Voice Demo Preview Section */}
+ <section className="bg-gray-50 py-12 px-6 text-center" ref={demoRef}>
+  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 font-[Poppins]">
+    🔊 Experience It Instantly
+  </h2>
+  <p className="text-gray-700 mb-6 text-lg font-[Poppins]">
+    Hear how this app will remind <strong>you by name</strong> at the right time.
+  </p>
+  <button
+    onClick={() => {
+      const msg = new SpeechSynthesisUtterance("Jony, it's time to study.");
+      speechSynthesis.speak(msg);
+    }}
+    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300 hover:cursor-pointer"
+  >
+    ▶️ Play Voice Demo
+  </button>
+  <p className="text-gray-500 mt-3 text-sm font-[Poppins]">
+    Example: “Jony, it's time to study.”
+  </p>
+</section>
+
 
       {/* Features Section */}
       <section className="py-16 px-6 bg-white text-center">
