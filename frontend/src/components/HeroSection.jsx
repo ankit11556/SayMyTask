@@ -7,7 +7,7 @@ const HeroSection = ({ onDemoClick }) => {
         🔊 Welcome to <span className="text-[#F472B6]">SayMyTask</span>
       </h2>
       <p className="text-lg md:text-xl font-medium mb-3 max-w-2xl mx-auto font-[Poppins]">
-        Your personal voice reminder assistant – set reminders that talk to you in your own voice!
+       Smart voice reminders that call your name – simple, personal & effective!
       </p>
       <p className="text-md md:text-lg mb-6 max-w-xl mx-auto font-[Poppins]">
         Stay on top of your tasks and make life easier with SayMyTask.

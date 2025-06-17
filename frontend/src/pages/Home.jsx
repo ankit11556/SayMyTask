@@ -68,11 +68,11 @@ const Home = () => {
           </div>
           <div className="flex flex-col items-center">
             <div className="bg-blue-600 text-white w-12 h-12 flex items-center justify-center rounded-full mb-4 font-bold">2</div>
-            <p className="font-[Poppins]">Set Your Reminder & Record Voice</p>
+            <p className="font-[Poppins]">Set Your Task with Name & Time</p>
           </div>
           <div className="flex flex-col items-center">
             <div className="bg-blue-600 text-white w-12 h-12 flex items-center justify-center rounded-full mb-4 font-bold">3</div>
-            <p className="font-[Poppins]">Get Notified on Time!</p>
+            <p className="font-[Poppins]">Get Reminded by Voice at the Right Time</p>
           </div>
         </div>
       </section>
