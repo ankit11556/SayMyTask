@@ -159,7 +159,7 @@ exports.checkAuth = (req,res) =>{
     if(err){
       return res.status(401).json({message: 'Invalid token, please login again'})
     }
-    
+   
     res.json({ userId: decoded.userId });
   })
 }
