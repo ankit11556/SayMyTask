@@ -163,3 +163,16 @@ exports.checkAuth = (req,res) =>{
     res.json({ userId: decoded.userId });
   })
 }
+
+//login with google
+// exports.loginWithGoogle = async (req,res) => {
+//   try {
+//     const {code} = req.query;
+//     if(!code){
+//       return res.status(400).json({message: "Google authorization code missing"})
+//     }
+
+//   } catch (error) {
+    
+//   }
+// }

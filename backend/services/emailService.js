@@ -16,7 +16,7 @@ const sendEmail = async (email,subject,html) => {
   });
 
   await transporter.sendMail({
-    from: `"TimeCue" <${process.env.BREVO_EMAIL}>`,
+    from: `"SayMyTask" <${process.env.BREVO_EMAIL}>`,
     to: email,
     subject,
     html
