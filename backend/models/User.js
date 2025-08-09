@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["user","admin"],
     default: "user"
+  },
+  authType:{
+    type: String,
+    enum: ["email","google"],
+    default: "email"
   }
 },{timestamps:true})
   
