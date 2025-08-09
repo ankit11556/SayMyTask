@@ -17,9 +17,7 @@ export const AuthProvider = ({children}) =>{
       try {
         const res = await userCheckAuth();
         setIsAutheticated(true);
-       
         setUser(res.data.userId);
-      
       } catch (error) {
         setIsAutheticated(false)
         setUser(null); 

@@ -11,6 +11,11 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters long.');
+      return;
+    }
     try {
       const res = await userLogin({ email, password });
       alert(res.data.message);
