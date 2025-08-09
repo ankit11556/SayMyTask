@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt')
 const sendEmail = require('../services/emailService')
 const generateEmailVerificationToken = require('../utils/generateEmailToken')
 const jwt = require('jsonwebtoken')
+const {oauth2client} = require('../utils/googleConfig')
+const axios = require('axios')
 
 //signup
 exports.signup = async (req,res) => {
@@ -165,14 +167,42 @@ exports.checkAuth = (req,res) =>{
 }
 
 //login with google
-// exports.loginWithGoogle = async (req,res) => {
-//   try {
-//     const {code} = req.query;
-//     if(!code){
-//       return res.status(400).json({message: "Google authorization code missing"})
-//     }
+exports.loginWithGoogle = async (req,res) => {
+  try {
+    const {code} = req.query;
+    if(!code){
+      return res.status(400).json({message: "Google authorization code missing"})
+    }
+  
+    const {tokens} = await oauth2client.getToken(code);
+    oauth2client.setCredentials(tokens);
 
-//   } catch (error) {
-    
-//   }
-// }
+    const userResponse = await axios.get(process.env.GOOGLE_AUTH_URI,{
+      headers: {
+        Authorization: `Bearer ${tokens.access_token}`
+      }
+    })
+
+    const {email} = userResponse.data;
+
+    let user = await User.findOne({email})
+
+    if (!user) {
+      user = new User({email,isVerified: true,authType: 'google'});
+      await user.save();
+    }
+
+    const {accessToken,refreshToken} = generateToken(user._id);
+    sendTokenToCookie(res,accessToken,refreshToken);
+
+    return res.status(200).json({
+      message: "login successfull",
+      userId: user._id,
+      email: user.email,
+      authType: 'google'
+    })
+  } catch (error) {
+    console.error("Google Login Error:",error)
+    return  res.status(500).json({message: "Google login failed"})
+  }
+}
