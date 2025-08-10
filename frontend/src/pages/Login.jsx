@@ -2,7 +2,8 @@ import { useState } from "react"
 import { userLogin } from "../services/AuthApi";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-
+import { Link } from "react-router-dom";
+import GoogleLogin from "../components/GoogleLogin";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,6 +57,10 @@ const Login = () => {
           >
             Login
           </button>
+           <p className="text-sm text-black">
+             Don’t have an account yet? <Link to="/signup" className="font-medium text-blue-600 hover:underline ">Sign up</Link>
+            </p>
+            <GoogleLogin></GoogleLogin>
         </form>
       </div>
     </div>

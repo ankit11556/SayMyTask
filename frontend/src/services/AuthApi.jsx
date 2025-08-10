@@ -20,3 +20,7 @@ export const userLogout = async () => {
 export const userCheckAuth = async () => {
   return await axiosInstance.get(`/auth/check-auth`)
 }
+
+export const googleLoginApi = async (code) => {
+  return await axiosInstance.get(`/auth/google?code=${code}`)
+}
