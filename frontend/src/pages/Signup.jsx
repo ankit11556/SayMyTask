@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { userSignup } from "../services/AuthApi"
-
+import { Link } from "react-router-dom"
 const Signup = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -47,6 +47,9 @@ const Signup = () => {
           >
             Signup
           </button>
+           <p className="text-sm text-black mt-5">
+              Already have an account? <Link to="/login" className="font-medium text-blue-600 hover:underline ">Login here</Link>
+            </p>
         </form>
       </div>
     </div>
