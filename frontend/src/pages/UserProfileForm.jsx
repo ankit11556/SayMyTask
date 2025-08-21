@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 const UserProfile = ({ onComplete }) => {
   const { setUser } = useAuth();
-
+  
   const [name, setName] = useState("");
   const [language, setLanguage] = useState("");
 

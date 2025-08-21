@@ -21,6 +21,7 @@ export const AuthProvider = ({children}) =>{
       } catch (error) {
         setIsAutheticated(false)
         setUser(null); 
+         console.error("Check auth failed:", error);
       } finally{
         setLoading(false)
       }
@@ -34,6 +35,7 @@ export const AuthProvider = ({children}) =>{
       alert(res.data.message)
       setUser(null)
       setIsAutheticated(false)
+      localStorage.removeItem('access_token')
       navigate("/login")
     } catch (error) {
       console.error("Logout failed", error);
