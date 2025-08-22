@@ -21,7 +21,9 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     if (
-      (error.response?.status === 401 || error.response.data.message === "Not authorized, token missing") &&            
+     
+      
+      error.response?.status === 401 &&            
       !originalRequest._retry &&
       !originalRequest.url.includes("/auth/refresh-token")
     ) {
