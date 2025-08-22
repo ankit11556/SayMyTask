@@ -54,16 +54,16 @@ exports.login = async (req,res) => {
     const user = await User.findOne({email}).select('+password');
 
     if(!user){
-      return res.status(401).json({message: 'User not found. Please sign up first.'})
+      return res.status(404).json({message: 'User not found. Please sign up first.'})
     }
 
     if (!user.isVerified) {
-       return res.status(401).json({ message: "Please verify your email first" });
+       return res.status(403).json({ message: "Please verify your email first" });
    }
 
     const isMatch = await bcrypt.compare(password,user.password);
     if (!isMatch) {
-      return res.status(401).json({message: 'Invalid credentials'})
+      return res.status(403).json({message: 'Invalid credentials'})
     }
 
     const {accessToken,refreshToken} = generateToken(user._id,user.role)
@@ -145,24 +145,7 @@ exports.refreshAccessToken = (req,res) =>{
 
     sendTokenToCookie(res,accessToken,newRefreshToken)
 
-    res.json({message: "Nes access token generated successfully"})
-  })
-}
-
-//check auth
-exports.checkAuth = (req,res) =>{
-  const accessToken = req.cookies.access_token;
-
-  if (!accessToken) {
-    return res.status(401).json({message: 'No access token, please login'})
-  }
-
-   jwt.verify(accessToken,process.env.JWT_ACCESS_SECRET,(err,decoded)=>{
-    if(err){
-      return res.status(401).json({message: 'Invalid token, please login again'})
-    }
-   
-    res.json({ userId: decoded.userId });
+    res.json({message: "Nes access token generated successfully",accessToken})
   })
 }
 
