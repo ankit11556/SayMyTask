@@ -8,7 +8,7 @@ const protect = async (req,res,next) => {
       (req.headers.authorization && 
         req.headers.authorization.startsWith("Bearer") && 
         req.headers.authorization.split(" ")[1]
-      );
+      ); 
 
     if (!token) {
       return res.status(401).json({message: 'Not authorized, no token'})
@@ -16,7 +16,7 @@ const protect = async (req,res,next) => {
 
     let decoded;
     try {
-       decoded = jwt.verify(token,process.env.JWT_ACCESS_SECRET);
+       decoded = jwt.verify(token,process.env.JWT_ACCESS_SECRET) 
     } catch (error) {
       if (error.name === "TokenExpiredError") {
         return res.status(401).json({message: "Session expired. Please login again"})

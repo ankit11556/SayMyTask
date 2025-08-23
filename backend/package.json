@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon server.js"
+    "start": "node server.js --env-file .env.production",
+    "dev": "nodemon server.js --env-file .env.development"
   },
   "keywords": [],
   "author": "",

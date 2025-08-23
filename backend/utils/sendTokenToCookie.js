@@ -3,13 +3,13 @@ const sendTokenToCookie = (res,accessToken,refreshToken) =>{
   const options = {
     httpOnly: true,
     secure: isProd,                           
-    sameSite: "lax",
+    sameSite: isProd ? "none" : "lax",
     path: "/"
   };
 
   res.cookie("access_token",accessToken,{
     ...options,
-    maxAge: parseInt(process.env.JWT_ACCESS_EXPIRY_MS)|| 15*60*1000
+    maxAge: parseInt(process.env.JWT_ACCESS_EXPIRY_MS)|| 10 * 60 *  1000
   });
 
   res.cookie("refresh_token",refreshToken,{
