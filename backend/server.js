@@ -1,12 +1,13 @@
-require('dotenv').config()
-const app = require('./app')
-const connectDB = require('./config/db')
-
+const dotenv = require('dotenv')
 if (process.env.NODE_ENV === "production") {
   dotenv.config({ path: ".env.production" });
 } else {
   dotenv.config({ path: ".env.development" });
 }
+
+const app = require('./app')
+const connectDB = require('./config/db')
+
 
 const PORT = process.env.PORT
 
