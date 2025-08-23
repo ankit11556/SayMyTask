@@ -13,7 +13,9 @@ const userSchema = new mongoose.Schema({
 
   password: {
     type: String,
-    required: [true, "Passsword is required"],
+    required: function () {
+      return this.authType === "email"
+    },
     select: false,
     minlength: [6,"Password must be at least 6 characters"]
   },
