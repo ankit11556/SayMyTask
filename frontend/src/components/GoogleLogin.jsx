@@ -17,6 +17,7 @@ const googleResponse =  async (authResult) => {
       const result  = await googleLoginApi(authResult['code'])
      setIsAutheticated(true);
      setUser(result.data.userId)
+     alert(result.data.message)
      navigate(from,{replace:true})
     }
   } catch (error) {

@@ -42,6 +42,7 @@ const MyReminders = () => {
         setReminders(response.data);
       } catch (error) {
         console.log(error.response?.data?.error);
+        alert("Failed to fetch reminders.")
       }
     };
     fetch();
@@ -58,7 +59,7 @@ const MyReminders = () => {
   const speakLoop = (task, reminderId) => {
     if (currentReminderRef.current === reminderId) return; // Prevent multiple speaking at same time
 
-    const finalMessage = `${user.name}, it's time to ${task}.`;
+    const finalMessage = `${user.name || "User"}, it's time to ${task}.`;
     currentReminderRef.current = reminderId;
     setCurrentTask(task);
     setShowStopPopup(true);
@@ -133,7 +134,7 @@ const MyReminders = () => {
           });
         }
       });
-    }, 1000);
+    }, 2000);
 
     return () => clearInterval(intervalRef.current);
   }, [reminders, notifieldIds]);
