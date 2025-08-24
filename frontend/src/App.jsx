@@ -1,10 +1,11 @@
 import AppRouter from "./routes/AppRouter"
 import { useAuth } from "./context/AuthContext";
+import LoadingPage from "./pages/LoadingPage";
 function App() {
   const {loading} = useAuth();
   
     if(loading){
-      return <p>Loading...</p>
+      return <LoadingPage></LoadingPage>
     }
   return (
     <>
