@@ -15,7 +15,8 @@ const SetReminder = () => {
   const [tasks, setTask] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const dateTime = `${date}T${time}`;
+  const dateTime = date && time ? new Date(`${date}T${time}:00`).toISOString() : null;
+
 
   useEffect(() => {
     const fetchUserProfile = async () => {
