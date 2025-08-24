@@ -1,10 +1,11 @@
+import logo from "../assets/logo.png";
 const LoadingPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
       {/* Logo + App Name */}
-      <h1 className="text-4xl md:text-5xl font-extrabold font-[Poppins] mb-6 flex items-center space-x-3">
-        <img src="../assets/logo.png" alt="SayMyTask logo" className="w-10 h-10" />
-        <span>SayMyTask</span>
+      <h1 className="text-4xl md:text-5xl font-extrabold font-[Poppins] mb-2 flex items-center space-x-3">
+        <img src={logo} alt="SayMyTask logo" className="w-30 h-30" />
+        {/* <span>SayMyTask</span> */}
       </h1>
 
       {/* Spinner */}
