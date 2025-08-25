@@ -86,16 +86,16 @@ exports.login = async (req,res) => {
 exports.logout = (req,res) =>{
   res.clearCookie('access_token',{
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production" ,
      path: "/",
-    sameSite: 'strict',
+    sameSite: process.env.NODE_ENV === "production" ? "none":"lax",
   });
 
   res.clearCookie('refresh_token', {
   httpOnly: true,
-  secure: true,
+  secure: process.env.NODE_ENV === "production",
   path: '/',
-  sameSite: 'strict',
+  sameSite: process.env.NODE_ENV === "production" ? "none":"lax",
 });
   res.status(200).json({message: 'Logged out successfully'})
 }
