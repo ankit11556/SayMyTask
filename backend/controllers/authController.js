@@ -170,10 +170,15 @@ exports.loginWithGoogle = async (req,res) => {
 
     let user = await User.findOne({email})
 
-    if (!user) {
-      user = new User({email,isVerified: true,authType: 'google'});
+    if (user) {
+      user.isVerified = true,
+      user.authType = 'google'
+      await user.save()
+    } else{
+       user = new User({email,isVerified: true,authType: 'google'});
       await user.save();
     }
+    
 
     const {accessToken,refreshToken} = generateToken(user._id);
     sendTokenToCookie(res,accessToken,refreshToken);
