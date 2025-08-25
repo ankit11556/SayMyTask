@@ -57,6 +57,10 @@ exports.login = async (req,res) => {
       return res.status(404).json({message: 'User not found. Please sign up first.'})
     }
 
+    if(!user.password){
+      return res.status(403).json({"message": "This account was created using Google. Please login with Google"})
+    }
+
     if (!user.isVerified) {
        return res.status(403).json({ message: "Please verify your email first" });
    }
