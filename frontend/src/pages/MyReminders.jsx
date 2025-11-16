@@ -2,8 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { deleteReminder, getReminder } from "../services/Api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 
 const MyReminders = () => {
+
+  const API_URL = import.meta.env.VITE_API_URL
+
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -14,25 +18,29 @@ const MyReminders = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
  
-  const voicesRef = useRef([]);
   const currentReminderRef = useRef(null);
   const intervalRef = useRef(null);
   const isSpeakingRef = useRef(false);
 
-  // Load available voices for speech synthesis
-  useEffect(() => {
-    const loadVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
-      if (voices.length > 0) {
-        voicesRef.current = voices;
-      }
-    };
+  const eleven = new ElevenLabsClient({
+  apiKey: import.meta.env.VITE_ELEVEN_KEY,  
+});
 
-    if ("speechSynthesis" in window) {
-      loadVoices();
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-    }
-  }, []);
+
+  const translateText = async (text, targetLang) => {
+  try {
+    const response = await fetch(`${API_URL}/translate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, targetLang }),
+    });
+    const data = await response.json();
+    return data.translated || text; // fallback
+  } catch (error) {
+    console.log("Translation failed:", error);
+    return text; // fallback to original
+  }
+};
 
   // Fetch reminders from API once on mount
   useEffect(() => {
@@ -48,54 +56,82 @@ const MyReminders = () => {
     fetch();
   }, []);
 
-  // Get English voice or fallback to first voice
-  const getVoice = () => {
-    const voices = voicesRef.current;
-    const enVoice = voices.find((v) => v.lang.toLowerCase().startsWith("en"));
-    return enVoice || voices[0];
-  };
-
+ 
   // Speech speak loop for reminder tasks
-  const speakLoop = (task, reminderId) => {
-    if (currentReminderRef.current === reminderId) return; // Prevent multiple speaking at same time
+ const speakLoop = async (task, reminderId) => {
+  if (currentReminderRef.current === reminderId) return;
 
-    const finalMessage = `${user.name || "User"}, it's time to ${task}.`;
-    currentReminderRef.current = reminderId;
-    setCurrentTask(task);
-    setShowStopPopup(true);
+  let finalMessage = `${user.name || "User"}, it's time to ${task}.`;
 
+  //  USER LANGUAGE CHECK (default = en)
+  const userLang = user?.language || "en"; 
 
-    isSpeakingRef.current = true;
-    setIsSpeaking(true);
+  // If language is NOT English → translate before speaking
+  if (userLang !== "en") {
+    finalMessage = await translateText(finalMessage, userLang);
+    setCurrentTask(finalMessage)
+  }else {
+   setCurrentTask(task);
+}
 
-    const voice = getVoice();
+  currentReminderRef.current = reminderId;
+  setShowStopPopup(true);
 
-    const utterance = new SpeechSynthesisUtterance(finalMessage);
-    utterance.voice = voice;
-    utterance.lang = voice?.lang || "en-US";
-    utterance.rate = 0.8;
-    utterance.pitch = 1;
+  isSpeakingRef.current = true;
+  setIsSpeaking(true);
 
-    utterance.onend = () => {
-      if (isSpeakingRef.current && currentReminderRef.current === reminderId) {
-        setTimeout(() => {
-          if (isSpeakingRef.current && currentReminderRef.current === reminderId) {
-            window.speechSynthesis.speak(utterance);
-          }
-        }, 1000);
-      }
-    };
+ try {
+  const response = await eleven.textToSpeech.convert("VhxAIIZM8IRmnl5fyeyk", { 
+    text: finalMessage,
+    modelId: "eleven_multilingual_v2",
+    outputFormat: "mp3_44100_128",
+  });
 
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+  let blob;
+
+  // CASE: Response is directly a ReadableStream (your actual case)
+  if (response && typeof response.getReader === "function") {
+    const reader = response.getReader();
+    const chunks = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+
+    blob = new Blob(chunks, { type: "audio/mpeg" });
+
+  } else {
+    console.log("Unexpected TTS format:", response);
+    throw new Error("Unsupported TTS response format");
+  }
+
+  // PLAY AUDIO
+  const url = URL.createObjectURL(blob);
+  const audioElement = new Audio(url);
+
+  audioElement.onended = () => {
+    if (isSpeakingRef.current && currentReminderRef.current === reminderId) {
+      setTimeout(() => {
+        if (isSpeakingRef.current) audioElement.play();
+      }, 1000);
+    }
   };
+
+  await audioElement.play();
+
+} catch (err) {
+  console.log("TTS failed", err);
+}
+};
+
 
   // Stop the speech reminder
   const stopSpeaking = () => {
     isSpeakingRef.current = false;
     setIsSpeaking(false);
-    window.speechSynthesis.cancel();
-
+    
     if (currentReminderRef.current) {
       setNotifieldIds((prev) => {
         const updated = new Set(prev);
@@ -267,8 +303,13 @@ const MyReminders = () => {
           className="fixed bottom-8 right-8 bg-indigo-700 text-white rounded-lg shadow-lg p-4 max-w-xs w-full flex items-center justify-between space-x-4 z-50 animate-fadeIn"
         >
           <div className="flex-grow">
-            <p className="font-semibold text-lg">it's time to {currentTask}.</p>
+
+           <p className="font-semibold text-lg">
+            {user?.language === "en"
+             ? `It's time to ${currentTask}.`: currentTask}
+            </p>
             <p className="text-sm mt-1 italic">Reminder is speaking...</p>
+            
           </div>
           <button
             onClick={stopSpeaking}

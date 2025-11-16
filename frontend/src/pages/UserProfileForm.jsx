@@ -57,7 +57,11 @@ const UserProfile = ({ onComplete }) => {
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           >
             <option value="">Select Language</option>
-            <option value="english">English</option>
+            <option value="en">English</option>
+            <option value="hi"> Hindi</option>
+            <option value="ta">Tamil</option>
+            <option value="ko">Korean</option>
+           <option value="it">Italian</option>
           </select>
         </div>
 
