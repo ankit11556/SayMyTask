@@ -7,22 +7,28 @@ const generateEmailVerificationToken = require('../utils/generateEmailToken')
 const jwt = require('jsonwebtoken')
 const {oauth2client} = require('../utils/googleConfig')
 const axios = require('axios')
+const { performance } = require('perf_hooks');
 
 //signup
 exports.signup = async (req,res) => {
   try {
     const {email,password} = req.body;
     const existUser = await User.findOne({email});
-
+   
     if(existUser){
       return res.status(400).json({message: 'User already exists' })
     }
     
    const user = await User.create({email,password});
-
    const emailToken = generateEmailVerificationToken(user._id)
      
    const verifyLink = `${process.env.BASE_URL}/verify-email?token=${emailToken}`
+   
+    res.status(201).json({message: "Signup successful. Please verify your email to activate your account", 
+      user:{
+        _id: user._id,
+        email: user.email
+      }})
 
     await sendEmail(
       user.email,
@@ -30,12 +36,7 @@ exports.signup = async (req,res) => {
       `<h3>Click to verify your email:</h3>
       <a href="${verifyLink}" target="_blank" style="padding:10px 15px;background:#4CAF50;color:white;text-decoration:none;border-radius:5px;display:inline-block;">Click Here to Verify</a>`
     )
-
-    res.status(201).json({message: "Signup successful. Please verify your email to activate your account", 
-      user:{
-        _id: user._id,
-        email: user.email
-      }})
+  
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -183,7 +184,6 @@ exports.loginWithGoogle = async (req,res) => {
       await user.save();
     }
     
-
     const {accessToken,refreshToken} = generateToken(user._id);
     sendTokenToCookie(res,accessToken,refreshToken);
 

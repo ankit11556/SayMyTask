@@ -23,10 +23,12 @@ app.use(cookieParser())
 const reminderRouter = require('./routes/reminderRoutes')
 const authRouter = require('./routes/authRoutes')
 const userProfileRouter = require('./routes/userProfileRoutes');
+const translateRouter = require('./routes/translateRoute')
 
 app.use("/api/reminders",reminderRouter);
 app.use("/api/auth",authRouter);
 app.use("/api/user-profile",userProfileRouter);
+app.use("/api",translateRouter)
 
 app.use((err,req,res,next)=>{
   console.log(err.stack);

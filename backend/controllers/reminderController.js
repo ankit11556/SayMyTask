@@ -5,7 +5,6 @@ exports.createReminder = async (req,res) => {
     const {  dateTime, tasks} = req.body;
 
     const userId = req.user._id
-    
     const newReminder = new Reminder({ dateTime, tasks,userId});
 
     await newReminder.save()
