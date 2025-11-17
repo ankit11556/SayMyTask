@@ -83,14 +83,14 @@ const SetReminder = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block mb-2 text-blue-600 font-semibold text-lg">Reminder Task</label>
-            <textarea
-              placeholder="e.g. Attend meeting at 5 PM"
-              className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            <input
+              placeholder="e.g. Eat the food / Do your homework / Play the game"
+              className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 transition py-6"
               rows="4"
               value={tasks}
               onChange={(e) => setTask(e.target.value)}
               required
-            ></textarea>
+            />
           </div>
 
           <div>
