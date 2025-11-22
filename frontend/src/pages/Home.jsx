@@ -47,8 +47,7 @@ const Home = () => {
           <div className="bg-indigo-100 p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
            <h3 className="text-xl font-semibold mb-2 text-indigo-700 font-[Poppins]">Language Support</h3>
            <p className="text-gray-700 font-[Poppins]">
-            Currently, reminders are supported only in English.<br />
-            Multi-language support coming soon!
+            Supports multiple languages: English, Hindi, Tamil, Korean & Italian.
             </p>
           </div>
           <div className="bg-pink-100 p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
