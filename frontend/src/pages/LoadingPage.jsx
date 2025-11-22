@@ -12,7 +12,7 @@ const LoadingPage = () => {
       <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
 
       {/* Loading Text */}
-      <p className="mt-4 text-lg font-semibold font-[Poppins]">Loading your tasks...</p>
+      <p className="mt-4 text-lg font-semibold font-[Poppins]">Loading your app...</p>
     </div>
   );
 };
