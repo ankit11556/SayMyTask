@@ -8,6 +8,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import ProtectedRoute from "../components/ProtectedRoute";
 import UserProfile from "../pages/UserProfileForm";
+import ProfilePage from "../pages/ProfilePage"
 const AppRouter = () =>{
   return(
  <>
@@ -19,6 +20,7 @@ const AppRouter = () =>{
   <Route path="/set-reminder" element={<SetReminder/>}></Route>
   <Route path="/my-reminders" element={<MyReminders/>}></Route>
   <Route path="/user-profile" element={<UserProfile/>}></Route>
+  <Route path="/profile" element={<ProfilePage/>}></Route>
 </Route>
   <Route path="/verify-email" element={<VerifyEmail/>}></Route>
   <Route path="/sign-up" element={<Signup/>}></Route>

@@ -24,3 +24,7 @@ export const profileSave = async (data) => {
 export const profileGet = async()=>{
   return await axiosInstance.get(`/user-profile`)
 }
+
+export const profileEdit = async (id, data) => {
+  return await axiosInstance.put(`/user-profile/${id}`,data)
+}
