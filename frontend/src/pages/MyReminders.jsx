@@ -1,46 +1,43 @@
 import { useEffect, useState, useRef } from "react";
 import { deleteReminder, getReminder } from "../services/Api";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
+import { useUserProfile } from "../context/UserProfileContext";
 
 const MyReminders = () => {
-
-  const API_URL = import.meta.env.VITE_API_URL
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const navigate = useNavigate();
-  const { user } = useAuth();
-
+  const { profile } = useUserProfile();
   const [reminders, setReminders] = useState([]);
   const [notifieldIds, setNotifieldIds] = useState(new Set());
   const [showStopPopup, setShowStopPopup] = useState(false);
   const [currentTask, setCurrentTask] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
- 
+
   const currentReminderRef = useRef(null);
   const intervalRef = useRef(null);
   const isSpeakingRef = useRef(false);
 
   const eleven = new ElevenLabsClient({
-  apiKey: import.meta.env.VITE_ELEVEN_KEY,  
-});
-
+    apiKey: import.meta.env.VITE_ELEVEN_KEY,
+  });
 
   const translateText = async (text, targetLang) => {
-  try {
-    const response = await fetch(`${API_URL}/translate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, targetLang }),
-    });
-    const data = await response.json();
-    return data.translated || text; // fallback
-  } catch (error) {
-    console.log("Translation failed:", error);
-    return text; // fallback to original
-  }
-};
+    try {
+      const response = await fetch(`${API_URL}/translate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, targetLang }),
+      });
+      const data = await response.json();
+      return data.translated || text; // fallback
+    } catch (error) {
+      console.log("Translation failed:", error);
+      return text; // fallback to original
+    }
+  };
 
   // Fetch reminders from API once on mount
   useEffect(() => {
@@ -50,88 +47,90 @@ const MyReminders = () => {
         setReminders(response.data);
       } catch (error) {
         console.log(error.response?.data?.error);
-        alert("Failed to fetch reminders.")
+        alert("Failed to fetch reminders.");
       }
     };
     fetch();
   }, []);
 
- 
   // Speech speak loop for reminder tasks
- const speakLoop = async (task, reminderId) => {
-  if (currentReminderRef.current === reminderId) return;
+  const speakLoop = async (task, reminderId) => {
+    if (currentReminderRef.current === reminderId) return;
 
-  let finalMessage = `${user.name || "User"}, it's time to ${task}.`;
+    let finalMessage = `${profile.name || "User"}, it's time to ${task}.`;
 
-  //  USER LANGUAGE CHECK (default = en)
-  const userLang = user?.language || "en"; 
+    //  USER LANGUAGE CHECK (default = en)
+    const userLang = profile?.language || "en";
 
-  // If language is NOT English → translate before speaking
-  if (userLang !== "en") {
-    finalMessage = await translateText(finalMessage, userLang);
-    setCurrentTask(finalMessage)
-  }else {
-   setCurrentTask(task);
-}
-
-  currentReminderRef.current = reminderId;
-  setShowStopPopup(true);
-
-  isSpeakingRef.current = true;
-  setIsSpeaking(true);
-
- try {
-  const response = await eleven.textToSpeech.convert("VhxAIIZM8IRmnl5fyeyk", { 
-    text: finalMessage,
-    modelId: "eleven_multilingual_v2",
-    outputFormat: "mp3_44100_128",
-  });
-
-  let blob;
-
-  // CASE: Response is directly a ReadableStream (your actual case)
-  if (response && typeof response.getReader === "function") {
-    const reader = response.getReader();
-    const chunks = [];
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
+    // If language is NOT English → translate before speaking
+    if (userLang !== "en") {
+      finalMessage = await translateText(finalMessage, userLang);
+      setCurrentTask(finalMessage);
+    } else {
+      setCurrentTask(task);
     }
 
-    blob = new Blob(chunks, { type: "audio/mpeg" });
+    currentReminderRef.current = reminderId;
+    setShowStopPopup(true);
 
-  } else {
-    console.log("Unexpected TTS format:", response);
-    throw new Error("Unsupported TTS response format");
-  }
+    isSpeakingRef.current = true;
+    setIsSpeaking(true);
 
-  // PLAY AUDIO
-  const url = URL.createObjectURL(blob);
-  const audioElement = new Audio(url);
+    try {
+      const response = await eleven.textToSpeech.convert(
+        "VhxAIIZM8IRmnl5fyeyk",
+        {
+          text: finalMessage,
+          modelId: "eleven_multilingual_v2",
+          outputFormat: "mp3_44100_128",
+        }
+      );
 
-  audioElement.onended = () => {
-    if (isSpeakingRef.current && currentReminderRef.current === reminderId) {
-      setTimeout(() => {
-        if (isSpeakingRef.current) audioElement.play();
-      }, 1000);
+      let blob;
+
+      // CASE: Response is directly a ReadableStream (your actual case)
+      if (response && typeof response.getReader === "function") {
+        const reader = response.getReader();
+        const chunks = [];
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+        }
+
+        blob = new Blob(chunks, { type: "audio/mpeg" });
+      } else {
+        console.log("Unexpected TTS format:", response);
+        throw new Error("Unsupported TTS response format");
+      }
+
+      // PLAY AUDIO
+      const url = URL.createObjectURL(blob);
+      const audioElement = new Audio(url);
+
+      audioElement.onended = () => {
+        if (
+          isSpeakingRef.current &&
+          currentReminderRef.current === reminderId
+        ) {
+          setTimeout(() => {
+            if (isSpeakingRef.current) audioElement.play();
+          }, 1000);
+        }
+      };
+
+      await audioElement.play();
+    } catch (err) {
+      console.log("TTS failed", err);
     }
   };
-
-  await audioElement.play();
-
-} catch (err) {
-  console.log("TTS failed", err);
-}
-};
-
 
   // Stop the speech reminder
   const stopSpeaking = () => {
     isSpeakingRef.current = false;
     setIsSpeaking(false);
-    
+
     if (currentReminderRef.current) {
       setNotifieldIds((prev) => {
         const updated = new Set(prev);
@@ -241,7 +240,9 @@ const MyReminders = () => {
               d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m4 0v-8a2 2 0 00-2-2h-3m-6 10v-10a2 2 0 00-2-2H5a2 2 0 00-2 2v10m16 0H5"
             />
           </svg>
-          <p className="text-lg font-semibold">No reminders found. Create one now!</p>
+          <p className="text-lg font-semibold">
+            No reminders found. Create one now!
+          </p>
           <button
             onClick={() => navigate("/set-reminder")}
             className="mt-4 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded shadow transition"
@@ -259,8 +260,12 @@ const MyReminders = () => {
               tabIndex={0}
             >
               <div className="flex-grow">
-                <p className="text-indigo-700 font-semibold text-lg">{reminder.tasks}</p>
-                <p className="text-gray-500 text-sm mt-1">{formatDateTime(reminder.dateTime)}</p>
+                <p className="text-indigo-700 font-semibold text-lg">
+                  {reminder.tasks}
+                </p>
+                <p className="text-gray-500 text-sm mt-1">
+                  {formatDateTime(reminder.dateTime)}
+                </p>
                 <div className="flex space-x-4 mt-4">
                   <button
                     onClick={() => confirmDelete(reminder._id)}
@@ -270,7 +275,11 @@ const MyReminders = () => {
                     Delete
                   </button>
                   <button
-                    onClick={() => navigate("/set-reminder", { state: { reminders: reminder } })}
+                    onClick={() =>
+                      navigate("/set-reminder", {
+                        state: { reminders: reminder },
+                      })
+                    }
                     aria-label={`Edit reminder: ${reminder.tasks}`}
                     className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
                   >
@@ -303,13 +312,12 @@ const MyReminders = () => {
           className="fixed bottom-8 right-8 bg-indigo-700 text-white rounded-lg shadow-lg p-4 max-w-xs w-full flex items-center justify-between space-x-4 z-50 animate-fadeIn"
         >
           <div className="flex-grow">
-
-           <p className="font-semibold text-lg">
-            {user?.language === "en"
-             ? `It's time to ${currentTask}.`: currentTask}
+            <p className="font-semibold text-lg">
+              {profile?.language === "en"
+                ? `${profile.name}, It's time to ${currentTask}.`
+                : currentTask}
             </p>
             <p className="text-sm mt-1 italic">Reminder is speaking...</p>
-            
           </div>
           <button
             onClick={stopSpeaking}
@@ -324,13 +332,15 @@ const MyReminders = () => {
               stroke="currentColor"
               strokeWidth={2}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
       )}
-
-
 
       {/* Delete confirmation popup */}
       {deleteConfirmId && (
@@ -342,11 +352,15 @@ const MyReminders = () => {
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50"
         >
           <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center">
-            <h3 id="deleteConfirmTitle" className="text-xl font-bold text-red-700 mb-4">
+            <h3
+              id="deleteConfirmTitle"
+              className="text-xl font-bold text-red-700 mb-4"
+            >
               Confirm Delete
             </h3>
             <p id="deleteConfirmDesc" className="mb-6">
-              Are you sure you want to delete this reminder? This action cannot be undone.
+              Are you sure you want to delete this reminder? This action cannot
+              be undone.
             </p>
             <div className="flex justify-center space-x-4">
               <button

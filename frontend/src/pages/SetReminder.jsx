@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react"
-import { editReminder, postReminder, profileGet } from "../services/Api";
+import { useEffect, useState } from "react";
+import { editReminder, postReminder } from "../services/Api";
 import { useNavigate, useLocation } from "react-router-dom";
 import UserProfile from "./UserProfileForm";
-import { useAuth } from "../context/AuthContext";
+import { useUserProfile } from "../context/UserProfileContext";
 
 const SetReminder = () => {
-  const { user, setUser } = useAuth();
-  const [showProfileForm, setShowProfileForm] = useState(true);
-
+  const { isProfileComplete } = useUserProfile();
   const navigate = useNavigate();
   const location = useLocation();
   const isEditMode = location.state?.reminders || null;
@@ -15,32 +13,8 @@ const SetReminder = () => {
   const [tasks, setTask] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const dateTime = date && time ? new Date(`${date}T${time}:00`).toISOString() : null;
-
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await profileGet();
-        const [{ name, language }] = response.data;
-        setUser((prevUser) => ({
-          ...prevUser,
-          name,
-          language,
-        }));
-      } catch (error) {
-        console.log("User profile fetch failed", error);
-      }
-    };
-
-    if (!user.name || !user.language) {
-      fetchUserProfile();
-    }
-  }, [user.name, user.language, setUser]);
-
-  useEffect(() => {
-    setShowProfileForm(!(user.name && user.language));
-  }, [user]);
+  const dateTime =
+    date && time ? new Date(`${date}T${time}:00`).toISOString() : null;
 
   useEffect(() => {
     if (isEditMode) {
@@ -59,7 +33,10 @@ const SetReminder = () => {
     e.preventDefault();
     try {
       if (isEditMode) {
-        const response = await editReminder(isEditMode._id, { tasks, dateTime });
+        const response = await editReminder(isEditMode._id, {
+          tasks,
+          dateTime,
+        });
         alert(response.data.message);
       } else {
         const response = await postReminder({ tasks, dateTime });
@@ -71,18 +48,20 @@ const SetReminder = () => {
     }
   };
 
-  if (showProfileForm) {
-    return <UserProfile onComplete={() => setShowProfileForm(false)} />;
-  }
+  if (!isProfileComplete) return <UserProfile />;
 
   return (
     <section className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="bg-white p-8 rounded-xl shadow-lg max-w-xl w-full">
-        <h2 className="text-3xl font-semibold text-blue-700 mb-6 text-center">Set Your Reminder</h2>
+        <h2 className="text-3xl font-semibold text-blue-700 mb-6 text-center">
+          Set Your Reminder
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block mb-2 text-blue-600 font-semibold text-lg">Reminder Task</label>
+            <label className="block mb-2 text-blue-600 font-semibold text-lg">
+              Reminder Task
+            </label>
             <input
               placeholder="e.g. Eat the food / Do your homework / Play the game"
               className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 transition py-6"
@@ -94,7 +73,9 @@ const SetReminder = () => {
           </div>
 
           <div>
-            <label className="block mb-2 text-blue-600 font-semibold text-lg">Date</label>
+            <label className="block mb-2 text-blue-600 font-semibold text-lg">
+              Date
+            </label>
             <input
               type="date"
               className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
@@ -105,7 +86,9 @@ const SetReminder = () => {
           </div>
 
           <div>
-            <label className="block mb-2 text-blue-600 font-semibold text-lg">Time</label>
+            <label className="block mb-2 text-blue-600 font-semibold text-lg">
+              Time
+            </label>
             <input
               type="time"
               className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
