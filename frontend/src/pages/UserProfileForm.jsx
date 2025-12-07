@@ -44,7 +44,7 @@ const UserProfile = () => {
   };
 
   return (
-    <div className=" bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-9.5">
+    <div className=" bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center  h-full">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full space-y-6"

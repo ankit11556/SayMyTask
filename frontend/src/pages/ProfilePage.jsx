@@ -7,7 +7,7 @@ const ProfilePage = () => {
 
   const navigate = useNavigate();
   return (
-    <div className="w-full  flex items-center justify-center bg-gray-50 p-11">
+    <div className="w-full  flex items-center justify-center bg-gray-50  h-full">
       <div className="bg-white w-full max-w-md shadow-lg rounded-2xl p-8 flex flex-col items-center gap-6">
         {/* Title */}
         <h2 className="text-3xl font-bold text-gray-800">Your Profile</h2>
