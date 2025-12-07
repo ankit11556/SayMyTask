@@ -167,12 +167,6 @@ const Navbar = () => {
             <Link to="/my-reminders">My Reminders</Link>
           </li>
         </ul>
-        <button
-          onClick={logout}
-          className="bg-gradient-to-r  bg-red-500 px-4 py-1 text-white shadow-md hover:scale-105 hover:brightness-110 transition-all duration-300  rounded-md mb-10"
-        >
-          Logout
-        </button>
       </div>
     </>
   );
