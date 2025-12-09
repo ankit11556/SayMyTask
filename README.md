@@ -74,15 +74,19 @@ npm run dev
 Run frontend:
 npm run dev
 
+---
+
 ## Usage
 
-Sign up / Login
+-Sign up / Login
 
 Create new tasks and set schedule
 
 Receive AI-powered voice reminders at the scheduled time
 
 Edit or delete tasks as needed
+
+---
 
 ## Authentication & Security
 
@@ -94,6 +98,8 @@ Email verification for account activation
 
 Input validation & sanitization on all API routes
 
+---
+
 ## Testing & Performance
 
 API testing with Jest and Supertest
@@ -101,6 +107,8 @@ API testing with Jest and Supertest
 Backend performance optimization using Node.js perf hooks
 
 Error handling with central middleware
+
+---
 
 ## Contributions
 
@@ -113,6 +121,8 @@ Create a new branch for your feature/fix
 Commit your changes
 
 Push and create a pull request
+
+---
 
 ## License
 
