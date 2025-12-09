@@ -74,9 +74,8 @@ npm run dev
 Run frontend:
 npm run dev
 
----
 
-## Usage
+ Usage
 
 -Sign up / Login
 
@@ -86,9 +85,8 @@ Receive AI-powered voice reminders at the scheduled time
 
 Edit or delete tasks as needed
 
----
 
-## Authentication & Security
+ Authentication & Security
 
 JWT with HTTP-only cookies for session management
 
@@ -98,9 +96,8 @@ Email verification for account activation
 
 Input validation & sanitization on all API routes
 
----
 
-## Testing & Performance
+Testing & Performance
 
 API testing with Jest and Supertest
 
@@ -108,9 +105,8 @@ Backend performance optimization using Node.js perf hooks
 
 Error handling with central middleware
 
----
 
-## Contributions
+Contributions
 
 Contributions are welcome!
 
@@ -122,8 +118,7 @@ Commit your changes
 
 Push and create a pull request
 
----
 
-## License
+License
 
 MIT License © Ankit
