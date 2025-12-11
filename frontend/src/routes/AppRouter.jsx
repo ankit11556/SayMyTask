@@ -1,5 +1,4 @@
 import {Routes, Route} from "react-router-dom";
-import Navbar from "../components/Navbar";
 import Home from "../pages/Home";
 import SetReminder from "../pages/SetReminder";
 import MyReminders from "../pages/MyReminders";
@@ -12,7 +11,7 @@ import ProfilePage from "../pages/ProfilePage"
 const AppRouter = () =>{
   return(
  <>
-<Navbar></Navbar>
+
 
 <Routes>
   <Route path="/" element={<Home/>}></Route>
