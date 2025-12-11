@@ -219,7 +219,7 @@ const MyReminders = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 relative min-h-screen bg-gray-50">
+    <div className="max-w-3xl mx-auto p-10 relative min-h-screen bg-gray-50 ">
       <h2 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center">
         My Reminders ({reminders.length})
       </h2>

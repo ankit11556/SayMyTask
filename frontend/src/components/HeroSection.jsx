@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const HeroSection = ({ onDemoClick }) => {
   return (
-    <section className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-10 px-4 text-center rounded-lg shadow-lg m-2 bg-white/10 backdrop-blur-xl border border-white/20">
+    <section className="bg-blue-500  text-white py-10 px-4 text-center rounded-lg shadow-lg m-2  backdrop-blur-xl border border-white/20 mt-10">
       <h2 className="text-4xl md:text-5xl font-extrabold font-[Poppins] mb-4 leading-tight">
         🔊 Welcome to{" "}
         <span className="bg-gradient-to-r from-pink-300 via-fuchsia-400 to-purple-400 bg-clip-text text-transparent">

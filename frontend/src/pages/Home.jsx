@@ -105,7 +105,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-center animate__animated animate__fadeInUp">
+      <section className="py-16 px-6 bg-blue-500  text-white text-center animate__animated animate__fadeInUp">
         <h2 className="text-3xl font-bold mb-4 font-[Poppins]">
           Ready to get started?
         </h2>

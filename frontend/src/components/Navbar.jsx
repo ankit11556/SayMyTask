@@ -28,7 +28,7 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`bg-gradient-to-r from-blue-600 to-purple-600 text-white flex justify-between items-center py-3 px-6 md:px-16 font-poppins shadow-2xl`}
+        className={`bg-blue-600 text-white flex justify-between items-center py-3 px-6 md:px-16 font-poppins shadow-2xl fixed z-50 w-full top-0 `}
       >
         <div className="h-16 w-44 flex items-center gap-4">
           {/* Mobile icon */}
@@ -81,13 +81,13 @@ const Navbar = () => {
 
         {/* desktop */}
         <ul className="hidden md:flex space-x-8 text-lg font-medium">
-          <li className="hover:text-cyan-300 transition-colors duration-300">
+          <li className="hover:text-purple-400 transition-colors duration-300">
             <Link to="/">Home</Link>
           </li>
-          <li className="hover:text-cyan-300 transition-colors duration-300">
+          <li className="hover:text-purple-400 transition-colors duration-300">
             <Link to="/set-reminder">Set Reminder</Link>
           </li>
-          <li className="hover:text-cyan-300 transition-colors duration-300">
+          <li className="hover:text-purple-400 transition-colors duration-300">
             <Link to="/my-reminders">My Reminders</Link>
           </li>
         </ul>
@@ -152,18 +152,18 @@ const Navbar = () => {
       {/* Mobile menu */}
 
       <div
-        className={`md:hidden flex flex-col justify-between  px-6 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-2xl  transition-all duration-300 h-[86vh] fixed top-0 left-0 z-10 w-3/5 max-w-xs lg:hidden ${
+        className={`md:hidden flex flex-col justify-between  px-6 py-4 bg-blue-600 text-white shadow-2xl  transition-all duration-300 h-[86vh] fixed top-0 left-0 z-10 w-3/5 max-w-xs lg:hidden ${
           isOpen ? "-translate-0" : "-translate-x-full"
         } mt-22`}
       >
         <ul className="space-y-4 ">
-          <li className="hover:text-cyan-300 transition-colors duration-300 cursor-pointer">
+          <li className="hover:text-purple-300 transition-colors duration-300 cursor-pointer">
             <Link to="/">Home</Link>
           </li>
-          <li className="hover:text-cyan-300 transition-colors duration-300 cursor-pointer">
+          <li className="hover:text-purple-300 transition-colors duration-300 cursor-pointer">
             <Link to="/set-reminder">Set Reminder</Link>
           </li>
-          <li className="hover:text-cyan-300 transition-colors duration-300 cursor-pointer">
+          <li className="hover:text-purple-300 transition-colors duration-300 cursor-pointer">
             <Link to="/my-reminders">My Reminders</Link>
           </li>
         </ul>
