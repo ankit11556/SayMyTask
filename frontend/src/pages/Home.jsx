@@ -116,13 +116,13 @@ const Home = () => {
             <p className="text-gray-700 font-[Poppins] mb-4">
               "SayMyTask helped me never miss my online classes! Personal reminders are amazing."
             </p>
-            <h4 className="font-semibold text-gray-900">— John Doe</h4>
+            <h4 className="font-semibold text-gray-900">— Aman</h4>
           </div>
           <div className="p-6 shadow-lg rounded-lg hover:shadow-xl transition-all">
             <p className="text-gray-700 font-[Poppins] mb-4">
               "I love that it reminds me by name. Super personal and effective!"
             </p>
-            <h4 className="font-semibold text-gray-900">— Jane Smith</h4>
+            <h4 className="font-semibold text-gray-900">— Vijay</h4>
           </div>
         </div>
       </section>
