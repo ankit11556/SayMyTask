@@ -42,7 +42,7 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 px-6 bg-white text-center animate__animated animate__fadeInUp">
+      <section id="features" className="py-16 px-6 bg-white text-center animate__animated animate__fadeInUp">
         <h2 className="text-3xl font-bold text-gray-800 mb-10 font-[Poppins]">
           Why SayMyTask?
         </h2>
@@ -76,7 +76,7 @@ const Home = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-16 px-6 bg-gray-100 text-center animate__animated animate__fadeInUp">
+      <section id="workflow" className="py-16 px-6 bg-gray-100 text-center animate__animated animate__fadeInUp">
         <h2 className="text-3xl font-bold text-gray-800 mb-10 font-[Poppins]">
           How It Works
         </h2>

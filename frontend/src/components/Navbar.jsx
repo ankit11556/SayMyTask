@@ -4,6 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import { FaUserCircle } from "react-icons/fa";
 import Logo from "../assets/logo.png";
 import { useUserProfile } from "../context/UserProfileContext";
+import { Link as ScrollLink } from "react-scroll";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -28,7 +30,8 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`bg-blue-600 text-white flex justify-between items-center py-3 px-6 md:px-16 font-poppins shadow-2xl fixed z-50 w-full top-0 `}
+        className={`bg-blue-600 text-white flex justify-between items-center py-3 px-6 md:px-16 font-poppins  fixed z-50 w-full top-0 backdrop-blur-sm shadow-lg
+`}
       >
         <div className="h-16 w-44 flex items-center gap-4">
           {/* Mobile icon */}
@@ -83,6 +86,28 @@ const Navbar = () => {
         <ul className="hidden md:flex space-x-8 text-lg font-medium">
           <li className="hover:text-purple-400 transition-colors duration-300">
             <Link to="/">Home</Link>
+          </li>
+          <li className="hover:text-purple-400 transition-colors duration-300">
+            <ScrollLink
+              to="features"
+              smooth={true}
+              offset={-80}
+              duration={500}
+              className="cursor-pointer"
+            >
+              About
+            </ScrollLink>
+          </li>
+          <li className="hover:text-purple-400 transition-colors duration-300">
+            <ScrollLink
+              to="workflow"
+              smooth={true}
+              offset={-80}
+              duration={500}
+              className="cursor-pointer"
+            >
+               Workflow
+            </ScrollLink>
           </li>
           <li className="hover:text-purple-400 transition-colors duration-300">
             <Link to="/set-reminder">Set Reminder</Link>
@@ -159,6 +184,28 @@ const Navbar = () => {
         <ul className="space-y-4 ">
           <li className="hover:text-purple-300 transition-colors duration-300 cursor-pointer">
             <Link to="/">Home</Link>
+          </li>
+           <li className="hover:text-purple-400 transition-colors duration-300">
+            <ScrollLink
+              to="features"
+              smooth={true}
+              offset={-80}
+              duration={500}
+              className="cursor-pointer"
+            >
+              About
+            </ScrollLink>
+          </li>
+          <li className="hover:text-purple-400 transition-colors duration-300">
+            <ScrollLink
+              to="workflow"
+              smooth={true}
+              offset={-80}
+              duration={500}
+              className="cursor-pointer"
+            >
+               Workflow
+            </ScrollLink>
           </li>
           <li className="hover:text-purple-300 transition-colors duration-300 cursor-pointer">
             <Link to="/set-reminder">Set Reminder</Link>
